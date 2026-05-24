@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "category": "Android Basics",
+    "question": "What are Android application components?",
+    "answer": "Application components are the essential building blocks of an Android app. The four main components are:\n1. Activities: UI screen components that represent a single screen with a user interface.\n2. Services: Background components that run without user interaction (e.g., playing music, fetching network data).\n3. Broadcast Receivers: Listeners that receive and respond to system-wide announcements or intents from other apps.\n4. Content Providers: Manage shared data access across different applications (e.g., accessing contacts data)."
+  },
+  {
+    "id": 2,
+    "category": "Android Basics",
+    "question": "Describe the Activity Lifecycle.",
+    "answer": "An activity goes through several lifecycle states:\n- onCreate(): Called when the activity is first created. Setup UI and variables here.\n- onStart(): Makes the activity visible to the user.\n- onResume(): Makes the activity interactive. This is where user interaction starts.\n- onPause(): Called when another activity comes into focus. Save unsaved data or pause animations.\n- onStop(): Called when the activity is no longer visible.\n- onDestroy(): Called before the activity is destroyed, ideal for clearing resources."
+  },
+  {
+    "id": 3,
+    "category": "Architecture Components",
+    "question": "What is MVVM and why is it preferred in Android development?",
+    "answer": "MVVM (Model-View-ViewModel) separates an app's UI (View) from its business logic (Model) using a ViewModel as an intermediary:\n1. View: Displays UI elements and forwards user inputs. It observes state changes in the ViewModel.\n2. ViewModel: Exposes state to the View and handles presentation logic. It survives configuration changes (like screen rotation).\n3. Model: Contains data sources (local database, network API) and business logic.\nMVVM is preferred because it facilitates unit testing, decouples UI from business logic, and works seamlessly with Jetpack Compose."
+  },
+  {
+    "id": 4,
+    "category": "OOP Concepts",
+    "question": "What is the difference between an Interface and an Abstract Class in Kotlin?",
+    "answer": "Key differences in Kotlin:\n1. Multiple Inheritance: A class can implement multiple interfaces but can extend only one abstract class.\n2. Constructor: Abstract classes can have constructors and hold state, while interfaces cannot hold state (properties in interfaces cannot have backing fields).\n3. Use Cases: Use abstract classes to define a base class for closely related classes that share implementation. Use interfaces to define a contract of behavior that can be implemented by unrelated classes."
+  },
+  {
+    "id": 5,
+    "category": "Services & Background",
+    "question": "What is WorkManager and when should it be used?",
+    "answer": "WorkManager is the recommended Android Jetpack library for persistent, deferrable background work. It is designed for tasks that must run even if the app restarts or the device reboots.\nKey features:\n- Respects system constraints (e.g., network availability, charging state).\n- Handles one-time or periodic tasks.\n- Guarantees execution.\nUse cases include: uploading logs, syncing local database data with a remote server, or applying image filters in the background."
+  },
+  {
+    "id": 6,
+    "category": "Unit Testing",
+    "question": "What is the difference between local unit tests and instrumented tests?",
+    "answer": "1. Local Unit Tests (test directory): Run on the JVM of your local computer. They do not have access to real Android framework APIs (unless mocked, e.g., with Mockito) and run very fast.\n2. Instrumented Tests (androidTest directory): Run on a real or virtual Android device. They compile into a separate test APK alongside your app, giving them full access to the Android context and framework APIs. They are slower but test actual integration and UI behaviors."
+  },
+  {
+    "id": 7,
+    "category": "RxJava & Dagger-Hilt",
+    "question": "What is Dependency Injection and why is Hilt used in Android?",
+    "answer": "Dependency Injection (DI) is a software design pattern where objects do not create their own dependencies, but rather receive them from an external provider.\nHilt is Google's opinionated DI library built on top of Dagger. It is preferred because:\n- It reduces boilerplates compared to raw Dagger.\n- It integrates directly with Android lifecycle components (e.g., ViewModel, Activity, Fragment).\n- It provides standard scopes and components out-of-the-box (e.g., @Singleton, @ActivityScoped)."
+  },
+  {
+    "id": 8,
+    "category": "Design Patterns",
+    "question": "Explain the Repository Pattern.",
+    "answer": "The Repository Pattern acts as a mediator between data sources (e.g., Room database, Retrofit API) and the rest of the application (e.g., ViewModels).\nBenefits:\n1. Separation of Concerns: ViewModels do not need to know where the data comes from (network or database).\n2. Caching Strategy: The repository can implement logic to decide whether to fetch fresh data from the network or load cached data from a local database/cache.\n3. Testing: It allows easy mocking of data sources for unit testing."
+  }
+]
