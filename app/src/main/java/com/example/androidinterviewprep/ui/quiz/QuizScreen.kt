@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.androidinterviewprep.data.model.Question
 import com.example.androidinterviewprep.viewmodel.QuestionViewModel
 
@@ -48,6 +49,22 @@ fun QuizScreen(
     val questions by viewModel.questions.collectAsState()
     var quizState by remember { mutableStateOf<QuizState>(QuizState.Setup) }
 
+    QuizScreenContent(
+        quizState = quizState,
+        questions = questions,
+        onStateChange = { quizState = it },
+        modifier = modifier
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun QuizScreenContent(
+    quizState: QuizState,
+    questions: List<Question>,
+    onStateChange: (QuizState) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -76,12 +93,12 @@ fun QuizScreen(
                             }
                             val shuffled = filtered.shuffled().take(quizLength)
                             if (shuffled.isNotEmpty()) {
-                                quizState = QuizState.InProgress(
+                                onStateChange(QuizState.InProgress(
                                     quizQuestions = shuffled,
                                     currentIndex = 0,
                                     correctCount = 0,
                                     incorrectCount = 0
-                                )
+                                ))
                             }
                         }
                     )
@@ -94,7 +111,7 @@ fun QuizScreen(
                             val newCorrect = if (isCorrect) state.correctCount + 1 else state.correctCount
                             val newIncorrect = if (!isCorrect) state.incorrectCount + 1 else state.incorrectCount
                             
-                            quizState = if (nextIndex < state.quizQuestions.size) {
+                            val newState = if (nextIndex < state.quizQuestions.size) {
                                 state.copy(
                                     currentIndex = nextIndex,
                                     correctCount = newCorrect,
@@ -107,14 +124,15 @@ fun QuizScreen(
                                     incorrectCount = newIncorrect
                                 )
                             }
+                            onStateChange(newState)
                         },
-                        onQuit = { quizState = QuizState.Setup }
+                        onQuit = { onStateChange(QuizState.Setup) }
                     )
                 }
                 is QuizState.Finished -> {
                     QuizFinishedScreen(
                         state = state,
-                        onRetry = { quizState = QuizState.Setup }
+                        onRetry = { onStateChange(QuizState.Setup) }
                     )
                 }
             }
@@ -557,5 +575,65 @@ fun StatDisplay(
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PreviewQuizSetup() {
+    val mockQuestions = listOf(
+        Question(1, "Android Basics", "Q1", "A1"),
+        Question(2, "Architecture", "Q2", "A2")
+    )
+    MaterialTheme {
+        Surface {
+            QuizScreenContent(
+                quizState = QuizState.Setup,
+                questions = mockQuestions,
+                onStateChange = {}
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PreviewQuizInProgress() {
+    val mockQuestions = listOf(
+        Question(1, "Android Basics", "What is an Activity?", "An Activity is a single, focused thing that the user can do.")
+    )
+    val state = QuizState.InProgress(
+        quizQuestions = mockQuestions,
+        currentIndex = 0,
+        correctCount = 0,
+        incorrectCount = 0
+    )
+    MaterialTheme {
+        Surface {
+            QuizScreenContent(
+                quizState = state,
+                questions = mockQuestions,
+                onStateChange = {}
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PreviewQuizFinished() {
+    val state = QuizState.Finished(
+        totalCount = 10,
+        correctCount = 8,
+        incorrectCount = 2
+    )
+    MaterialTheme {
+        Surface {
+            QuizScreenContent(
+                quizState = state,
+                questions = emptyList(),
+                onStateChange = {}
+            )
+        }
     }
 }

@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.androidinterviewprep.data.model.Question
 import com.example.androidinterviewprep.viewmodel.QuestionViewModel
 
@@ -34,6 +35,28 @@ fun SearchScreen(
         derivedStateOf { viewModel.searchQuestions(query) }
     }
 
+    SearchScreenContent(
+        query = query,
+        active = active,
+        searchResults = searchResults,
+        onQueryChange = { query = it },
+        onActiveChange = { active = it },
+        onQuestionClick = onQuestionClick,
+        modifier = modifier
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchScreenContent(
+    query: String,
+    active: Boolean,
+    searchResults: List<Question>,
+    onQueryChange: (String) -> Unit,
+    onActiveChange: (Boolean) -> Unit,
+    onQuestionClick: (String, Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -47,15 +70,15 @@ fun SearchScreen(
         ) {
             SearchBar(
                 query = query,
-                onQueryChange = { query = it },
-                onSearch = { active = false },
+                onQueryChange = onQueryChange,
+                onSearch = { onActiveChange(false) },
                 active = active,
-                onActiveChange = { active = it },
+                onActiveChange = onActiveChange,
                 placeholder = { Text("Search questions, categories, answers...") },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
                 trailingIcon = {
                     if (query.isNotEmpty()) {
-                        IconButton(onClick = { query = "" }) {
+                        IconButton(onClick = { onQueryChange("") }) {
                             Icon(Icons.Default.Clear, contentDescription = "Clear")
                         }
                     }
@@ -72,7 +95,7 @@ fun SearchScreen(
                         SearchSuggestionItem(
                             question = question,
                             onClick = {
-                                active = false
+                                onActiveChange(false)
                                 onQuestionClick(question.category, question.id)
                             }
                         )
@@ -105,6 +128,61 @@ fun SearchScreen(
                     }
                 }
             }
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PreviewSearchPlaceholder() {
+    MaterialTheme {
+        Surface {
+            SearchScreenContent(
+                query = "",
+                active = false,
+                searchResults = emptyList(),
+                onQueryChange = {},
+                onActiveChange = {},
+                onQuestionClick = { _, _ -> }
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PreviewSearchResults() {
+    val mockResults = listOf(
+        Question(1, "Android", "What is an Intent?", "An Intent is a messaging object you can use to request an action from another app component."),
+        Question(2, "Kotlin", "What is a Coroutine?", "A coroutine is a concurrency design pattern that you can use on Android to simplify code that executes asynchronously.")
+    )
+    MaterialTheme {
+        Surface {
+            SearchScreenContent(
+                query = "Android",
+                active = false,
+                searchResults = mockResults,
+                onQueryChange = {},
+                onActiveChange = {},
+                onQuestionClick = { _, _ -> }
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PreviewSearchEmpty() {
+    MaterialTheme {
+        Surface {
+            SearchScreenContent(
+                query = "UnknownTopic",
+                active = false,
+                searchResults = emptyList(),
+                onQueryChange = {},
+                onActiveChange = {},
+                onQuestionClick = { _, _ -> }
+            )
         }
     }
 }

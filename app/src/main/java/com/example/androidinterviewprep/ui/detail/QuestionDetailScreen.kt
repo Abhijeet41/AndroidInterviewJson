@@ -21,6 +21,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.androidinterviewprep.data.model.Question
 import com.example.androidinterviewprep.viewmodel.QuestionViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,7 +48,42 @@ fun QuestionDetailScreen(
         if (currentIndex != -1) questions[currentIndex] else null
     }
 
-    var showAnswer by remember(questionId) { mutableStateOf(false) }
+    val hasPrevious = currentIndex > 0
+    val hasNext = currentIndex != -1 && currentIndex < questions.size - 1
+
+    QuestionDetailContent(
+        categoryName = categoryName,
+        currentQuestion = currentQuestion,
+        isReviewed = currentQuestion?.let { it.id in reviewedIds } ?: false,
+        hasPrevious = hasPrevious,
+        hasNext = hasNext,
+        onBackClick = onBackClick,
+        onToggleReviewed = { currentQuestion?.let { viewModel.toggleReviewed(it.id) } },
+        onNavigateToPrevious = { 
+            if (hasPrevious) onNavigateToQuestion(questions[currentIndex - 1].id) 
+        },
+        onNavigateToNext = { 
+            if (hasNext) onNavigateToQuestion(questions[currentIndex + 1].id) 
+        },
+        modifier = modifier
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun QuestionDetailContent(
+    categoryName: String,
+    currentQuestion: Question?,
+    isReviewed: Boolean,
+    hasPrevious: Boolean,
+    hasNext: Boolean,
+    onBackClick: () -> Unit,
+    onToggleReviewed: () -> Unit,
+    onNavigateToPrevious: () -> Unit,
+    onNavigateToNext: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var showAnswer by remember(currentQuestion?.id) { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -86,8 +123,6 @@ fun QuestionDetailScreen(
                 )
             }
         } else {
-            val isReviewed = currentQuestion.id in reviewedIds
-            
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -151,7 +186,7 @@ fun QuestionDetailScreen(
                         ) {
                             Checkbox(
                                 checked = isReviewed,
-                                onCheckedChange = { viewModel.toggleReviewed(currentQuestion.id) }
+                                onCheckedChange = { onToggleReviewed() }
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
@@ -229,15 +264,8 @@ fun QuestionDetailScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    val hasPrevious = currentIndex > 0
-                    val hasNext = currentIndex < questions.size - 1
-
                     OutlinedButton(
-                        onClick = {
-                            if (hasPrevious) {
-                                onNavigateToQuestion(questions[currentIndex - 1].id)
-                            }
-                        },
+                        onClick = onNavigateToPrevious,
                         enabled = hasPrevious,
                         shape = RoundedCornerShape(12.dp),
                         modifier = Modifier
@@ -255,11 +283,7 @@ fun QuestionDetailScreen(
                     Spacer(modifier = Modifier.width(16.dp))
 
                     Button(
-                        onClick = {
-                            if (hasNext) {
-                                onNavigateToQuestion(questions[currentIndex + 1].id)
-                            }
-                        },
+                        onClick = onNavigateToNext,
                         enabled = hasNext,
                         shape = RoundedCornerShape(12.dp),
                         modifier = Modifier
@@ -275,6 +299,52 @@ fun QuestionDetailScreen(
                     }
                 }
             }
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PreviewQuestionDetailContent() {
+    val mockQuestion = Question(
+        id = 1,
+        category = "Android Basics",
+        question = "What is the life cycle of an activity in Android?",
+        answer = "The lifecycle of an activity includes onCreate(), onStart(), onResume(), onPause(), onStop(), onDestroy(), and onRestart(). These methods allow you to manage the transitions between different states of the activity."
+    )
+    MaterialTheme {
+        Surface {
+            QuestionDetailContent(
+                categoryName = "Android Basics",
+                currentQuestion = mockQuestion,
+                isReviewed = false,
+                hasPrevious = true,
+                hasNext = true,
+                onBackClick = {},
+                onToggleReviewed = {},
+                onNavigateToPrevious = {},
+                onNavigateToNext = {}
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PreviewQuestionDetailNotFound() {
+    MaterialTheme {
+        Surface {
+            QuestionDetailContent(
+                categoryName = "Android Basics",
+                currentQuestion = null,
+                isReviewed = false,
+                hasPrevious = false,
+                hasNext = false,
+                onBackClick = {},
+                onToggleReviewed = {},
+                onNavigateToPrevious = {},
+                onNavigateToNext = {}
+            )
         }
     }
 }

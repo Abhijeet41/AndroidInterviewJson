@@ -20,6 +20,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.androidinterviewprep.data.model.Question
 import com.example.androidinterviewprep.viewmodel.QuestionViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,6 +38,26 @@ fun QuestionListScreen(
         viewModel.getByCategory(categoryName)
     }
 
+    QuestionListContent(
+        categoryName = categoryName,
+        questions = questions,
+        reviewedIds = reviewedIds,
+        onBackClick = onBackClick,
+        onQuestionClick = onQuestionClick,
+        modifier = modifier
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun QuestionListContent(
+    categoryName: String,
+    questions: List<Question>,
+    reviewedIds: Set<Int>,
+    onBackClick: () -> Unit,
+    onQuestionClick: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -92,6 +114,43 @@ fun QuestionListScreen(
                     )
                 }
             }
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PreviewQuestionListContent() {
+    val mockQuestions = listOf(
+        Question(1, "Android Basics", "What is an Activity?", "Answer here"),
+        Question(2, "Android Basics", "What is a Fragment?", "Answer here"),
+        Question(3, "Android Basics", "How do you handle configuration changes?", "Answer here")
+    )
+    MaterialTheme {
+        Surface {
+            QuestionListContent(
+                categoryName = "Android Basics",
+                questions = mockQuestions,
+                reviewedIds = setOf(1),
+                onBackClick = {},
+                onQuestionClick = {}
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PreviewQuestionListEmpty() {
+    MaterialTheme {
+        Surface {
+            QuestionListContent(
+                categoryName = "Empty Category",
+                questions = emptyList(),
+                reviewedIds = emptySet(),
+                onBackClick = {},
+                onQuestionClick = {}
+            )
         }
     }
 }

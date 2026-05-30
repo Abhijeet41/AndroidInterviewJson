@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.androidinterviewprep.data.model.Question
 import com.example.androidinterviewprep.viewmodel.QuestionViewModel
 import com.example.androidinterviewprep.viewmodel.UiState
@@ -490,6 +491,61 @@ fun ErrorState(
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
         ) {
             Text("Retry")
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PreviewHomeScreenContent() {
+    val mockQuestions = listOf(
+        Question(1, "Android Basics", "What is an Activity?", "Answer here"),
+        Question(2, "Android Basics", "What is a Fragment?", "Answer here"),
+        Question(3, "Architecture Components", "What is ViewModel?", "Answer here"),
+        Question(4, "OOP Concepts", "What is Inheritance?", "Answer here"),
+        Question(5, "Services & Background", "What is a Service?", "Answer here"),
+        Question(6, "Unit Testing", "What is JUnit?", "Answer here")
+    )
+    MaterialTheme {
+        Surface {
+            HomeScreenContent(
+                questions = mockQuestions,
+                reviewedIds = setOf(1, 3),
+                onCategoryClick = {}
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PreviewHomeScreenLoading() {
+    MaterialTheme {
+        Surface {
+            HomeScreenShimmer()
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PreviewHomeScreenEmpty() {
+    MaterialTheme {
+        Surface {
+            EmptyState(onRetry = {})
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PreviewHomeScreenError() {
+    MaterialTheme {
+        Surface {
+            ErrorState(
+                message = "Something went wrong while fetching data.",
+                onRetry = {}
+            )
         }
     }
 }
