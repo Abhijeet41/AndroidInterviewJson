@@ -610,5 +610,5 @@
     "category": "OOP Concepts",
     "question": "What is the difference between REST and SOAP?",
     "answer": "REST: uses XML/JSON/HTML, transfers data via HTTP only, less secure, better performance, less bandwidth.\nSOAP: uses XML only, can use HTTP/SMTP/FTP, more secure, lower performance, more bandwidth. REST can use SOAP principles, but SOAP cannot use REST."
-  }
+  } 
 ]
