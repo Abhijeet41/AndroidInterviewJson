@@ -610,5 +610,11 @@
     "category": "OOP Concepts",
     "question": "What is the difference between REST and SOAP?",
     "answer": "REST: uses XML/JSON/HTML, transfers data via HTTP only, less secure, better performance, less bandwidth.\nSOAP: uses XML only, can use HTTP/SMTP/FTP, more secure, lower performance, more bandwidth. REST can use SOAP principles, but SOAP cannot use REST."
-  }
+  },
+  {
+  "id": 103,
+  "category": "RxJava & Dagger-Hilt",
+  "question": "What is Dagger 2?",
+  "answer": "Dagger library was created by developers at Square, way back in 2012. Dagger 2 is a compile-time android dependency injection framework and uses the Java Specification Request (JSR) 330 and uses an annotation processor. 1)@Module : This is used on the class that does the work of constructing objects. 2)@Provides : This is used on the methods inside the Module class that return the object. 3)@Inject: Used to request Dagger to provide the respective Object on Constructor, Fields and Methods. 4)@Component : Acts as a bridge between @Module and @Inject. 5)@Singleton : Only a single instance of the dependency object is created. 6)@Scope: Used to create a custom scope (e.g., @ApplicationScope or @ActivityScope). 7)@Qualifier: Used when multiple objects of the same type are needed with different values. 8)@Binds: Declares abstract methods in modules for interfaces or abstract classes. 9)@BindsInstance: Used for values received at runtime, e.g., val db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, \"database-name\").build()."
+}	
 ]
