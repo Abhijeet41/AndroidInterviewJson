@@ -670,5 +670,143 @@
   "category": "Kotlin Basics",
   "question": "What is the difference between lateinit and lazy in Kotlin?",
   "answer": "Both are used to delay property initialization in Kotlin.\n\nlateInit:\nUsed when we do not want to initialize a variable at declaration time but will initialize it before use.\n- Can only be used with the var keyword.\n- Can only be used with non-nullable types.\n- Should be used when the variable is mutable and will be initialized later.\n- You must ensure it is initialized before accessing it, otherwise UninitializedPropertyAccessException is thrown.\n\nlazy:\nUsed when object creation is expensive and we want to delay it until it is actually needed.\n- Can only be used with the val keyword.\n- The object is initialized only on the first access; subsequent accesses return the cached result.\n\nExample:\nclass Session {\n    private val mentor: Mentor by lazy { Mentor() }\n}\n\nHere, the Mentor object will not be created when Session is created. It will only be initialized the first time mentor is accessed. This leads to faster Session object creation since the expensive Mentor initialization is deferred."
-}
+  },
+  {
+    "id": 113,
+    "category": "Kotlin Coroutines",
+    "question": "What is a Coroutine in Kotlin?",
+    "answer": "Coroutines are lightweight threads used in Android to simplify code that executes asynchronously. Coroutines help manage long-running tasks.\n\nAdvantages of Coroutines:\n\nExecuted within a thread:\nMultiple coroutines can run inside a single thread.\n\nCoroutines are suspendable:\nWe can execute some instructions, pause a coroutine in the middle of execution, and resume it later. A regular thread cannot do this.\n\nThey can switch their context:\nA coroutine that started in one thread can easily switch to another thread.\n\nNote: In Kotlin, executing async means running a task asynchronously using coroutines, which allows operations to run without blocking the current thread and ensures the application remains responsive."
+  },
+  {
+    "id": 114,
+    "category": "Kotlin Coroutines",
+    "question": "Why do we need Coroutines and why are they lightweight?",
+    "answer": "Traditional threads are managed by the OS, are heavy in terms of memory (MBs per thread), and are expensive for context switching.\n\nCoroutines are managed by the Kotlin runtime, not the OS, so they need only a few KB of memory. This is why they are considered lightweight.\n\nAdditionally, using RxJava requires a lot of effort to use safely, and AsyncTask and threads can easily introduce memory leaks and overhead. Coroutines solve all these problems in a cleaner and more structured way."
+  },
+  {
+    "id": 115,
+    "category": "Kotlin Coroutines",
+    "question": "How many scopes are there in Kotlin Coroutines?",
+    "answer": "There are basically 3 scopes in Kotlin Coroutines:\n\nGlobal Scope:\nCoroutines launched in GlobalScope live as long as the application does. This can lead to memory leak issues and is generally discouraged.\n\nLifecycle Scope:\nSimilar to GlobalScope, but all coroutines launched within an Activity or Fragment are automatically cancelled when that Activity or Fragment is destroyed. This prevents memory leaks.\n\nViewModel Scope:\nSimilar to Lifecycle Scope, but the coroutines live as long as the ViewModel is alive. It is the recommended scope for coroutines that fetch or process data for the UI."
+  },
+  {
+    "id": 116,
+    "category": "Kotlin Coroutines",
+    "question": "What are Dispatchers in Kotlin Coroutines?",
+    "answer": "Dispatchers determine which thread a coroutine runs on. There are 4 types:\n\nMain Dispatcher (Dispatchers.Main):\nRuns the coroutine on the main/UI thread. Used for UI operations since the UI can only be updated from the main thread.\n\nIO Dispatcher (Dispatchers.IO):\nRuns the coroutine on an IO-optimized thread pool. Used for network calls, database reads/writes, and file operations.\n\nDefault Dispatcher (Dispatchers.Default):\nRuns the coroutine on a CPU-optimized thread pool. Used for complex, CPU-intensive work like sorting a list of 10,000 elements, so it does not block the UI thread.\n\nUnconfined Dispatcher (Dispatchers.Unconfined):\nNot confined to any specific thread. It starts in the current thread and can resume in a different thread. Generally not recommended for production use."
+  },
+  {
+    "id": 117,
+    "category": "Kotlin Coroutines",
+    "question": "How can we use the delay function inside the main thread?",
+    "answer": "We can achieve this using runBlocking. Inside a runBlocking block, we can use the delay function and launch multiple coroutine scopes. These scopes execute asynchronously within the blocked thread.\n\nNote: runBlocking is mainly used for testing or bridging blocking and non-blocking code. It should not be used on the main thread in production as it blocks the thread and prevents UI updates."
+  },
+  {
+    "id": 118,
+    "category": "Kotlin Coroutines",
+    "question": "What is the difference between launch and async in Kotlin Coroutines?",
+    "answer": "launch:\nFire and forget. It does not return any result. Used when you want to start a coroutine and do not need its result.\n\nasync:\nPerforms a task and returns a result. It returns an instance of Deferred<T>, and you call .await() on it to get the result when needed.\n\nIn short:\n- Use launch when you do not need a return value.\n- Use async + await when you need to get a result from a coroutine."
+  },
+  {
+    "id": 119,
+    "category": "Kotlin Coroutines",
+    "question": "What is SupervisorScope in Kotlin Coroutines?",
+    "answer": "SupervisorScope is a coroutine builder that creates a new child scope and acts as a supervisor for coroutines launched within it.\n\nUnlike a regular coroutine scope, if a child coroutine fails with an exception, the SupervisorScope does not cancel the remaining child coroutines. Each child is independent.\n\nExample:\nsuspend fun myCoroutine() {\n    supervisorScope {\n        launch {\n            // do some work\n        }\n        launch {\n            // do some other work — runs even if the first launch fails\n        }\n    }\n}"
+  },
+  {
+    "id": 120,
+    "category": "Kotlin Coroutines",
+    "question": "What is the difference between StateFlow and LiveData?",
+    "answer": "Both are observable data holders used in MVVM architecture, but they serve different needs.\n\nLifecycle Awareness:\nLiveData is lifecycle-aware by default.\nStateFlow requires lifecycle handling using repeatOnLifecycle or flowWithLifecycle.\n\nInitial Value:\nStateFlow always requires an initial value at creation.\nLiveData does not require an initial value.\n\nCoroutines and Operators:\nStateFlow supports Flow operators like map, debounce, combine, and filter.\nLiveData has limited transformation support (only map and switchMap).\n\nThreading:\nLiveData uses setValue() on the main thread and postValue() from a background thread.\nStateFlow is coroutine-friendly and thread-safe by design.\n\nJetpack Compose:\nStateFlow integrates naturally with collectAsState() in Compose.\nLiveData works in Compose but requires observeAsState() as a bridge.\n\nConclusion:\nFor modern coroutine-first and Compose-based apps, StateFlow is the better choice.\nFor legacy XML-based projects, LiveData is still perfectly fine."
+  },
+  {
+    "id": 121,
+    "category": "Kotlin Basics",
+    "question": "What are scope functions in Kotlin and what are their types?",
+    "answer": "Scope functions are used to execute a block of code within the context of an object, making the code more concise and readable.\n\nlet (context: it, returns: lambda result):\nFrequently used for null-safety calls using the safe call operator (?.). The block only runs if the value is non-null.\nExample: list.size?.let { ... }\n\napply (context: this, returns: context object):\nUsed to configure or set values on an object. You can set multiple properties without repeating the object reference.\n\nwith (context: this, returns: lambda result):\nRecommended when calling multiple functions on a context object without needing the lambda result as a return value.\n\nrun (context: this, returns: lambda result):\nA combination of let and with. Used for null-safety calls along with other calculations on the object.\n\nalso (context: it, returns: context object):\nUsed when you need to perform additional operations after the object members have been initialized, without changing the object itself."
+  },
+  {
+    "id": 122,
+    "category": "Kotlin Basics",
+    "question": "What is the open keyword in Kotlin?",
+    "answer": "By default, all classes and functions in Kotlin are final, meaning they cannot be inherited or overridden. To allow inheritance or overriding, you must explicitly mark the class or function with the open keyword.\n\nExample:\nopen class Animal {\n    open fun speak() { }\n}\n\nclass Dog : Animal() {\n    override fun speak() { }\n}"
+  },
+  {
+    "id": 123,
+    "category": "Kotlin Basics",
+    "question": "Does Kotlin support primitive data types?",
+    "answer": "No. Kotlin does not have primitive data types like Java. Everything in Kotlin is an object. However, the Kotlin compiler optimizes types like Int, Double, and Boolean to use JVM primitives under the hood wherever possible, so there is no performance difference."
+  },
+  {
+    "id": 124,
+    "category": "Kotlin Basics",
+    "question": "What are higher-order functions in Kotlin?",
+    "answer": "A higher-order function is a function that either takes another function as a parameter, returns a function, or both.\n\nExample:\nfun passMeFunction(abc: () -> Unit) {\n    // executes the passed function\n    abc()\n}\n\nHigher-order functions are the foundation for features like scope functions (let, apply, run), collection operations (map, filter), and coroutine builders (launch, async)."
+  },
+  {
+    "id": 125,
+    "category": "Kotlin Basics",
+    "question": "What are extension functions in Kotlin?",
+    "answer": "Extension functions allow you to add new functions to an existing class without inheriting it or modifying its source code. They are defined outside the class using the ClassName.functionName() syntax.\n\nExample:\nfun String.addExclamation(): String {\n    return this + \"!\"\n}\n\nval result = \"Hello\".addExclamation() // \"Hello!\"\n\nThey are widely used in Android for utility methods on Context, View, and String."
+  },
+  {
+    "id": 126,
+    "category": "Kotlin Basics",
+    "question": "What are visibility modifiers in Kotlin?",
+    "answer": "Visibility modifiers define the scope or accessibility of a class, function, or property.\n\nprivate: Visible only within the class or file where it is declared.\n\nprotected: Visible within the class and its subclasses. Not applicable at the top level.\n\ninternal: Visible everywhere within the same module (e.g., the same Gradle module).\n\npublic: Visible to everyone. This is the default modifier in Kotlin."
+  },
+  {
+    "id": 127,
+    "category": "Kotlin Basics",
+    "question": "What are the types of constructors in Kotlin?",
+    "answer": "Primary Constructor:\nDefined in the class header. It cannot contain any code directly; initialization logic goes in an init{} block.\nExample: class Person(val name: String, val age: Int)\n\nSecondary Constructor:\nDefined inside the class body using the constructor keyword. You must explicitly call the primary constructor from a secondary constructor using this().\n\nExample:\nclass Person(val name: String) {\n    constructor(name: String, age: Int) : this(name) {\n        // additional setup\n    }\n}"
+  },
+  {
+    "id": 128,
+    "category": "Kotlin Basics",
+    "question": "What is an inline function in Kotlin?",
+    "answer": "An inline function instructs the compiler to copy the entire function body to every call site at compile time, instead of making an actual function call at runtime. It is declared using the inline keyword.\n\nAdvantages:\n- Eliminates function call overhead.\n- Faster execution, especially for higher-order functions with lambda parameters.\n\nWhen to use:\n- When the function body is small and called frequently.\n\nWhen NOT to use:\n- When the function body is large and called from many places, as the code will be duplicated at every call site, increasing APK size."
+  },
+  {
+    "id": 129,
+    "category": "Kotlin Basics",
+    "question": "What are lambda expressions in Kotlin?",
+    "answer": "Lambda expressions are anonymous functions that can be stored in variables, passed as arguments to functions, or returned from functions.\n\nSyntax:\nval add: (Int, Int) -> Int = { a, b -> a + b }\nval result = add(9, 10) // result = 19\n\nLambdas are heavily used with higher-order functions like map, filter, forEach, and coroutine builders."
+  },
+  {
+    "id": 130,
+    "category": "Kotlin Basics",
+    "question": "How do you create a Singleton class in Kotlin?",
+    "answer": "In Kotlin, a Singleton is created using the object keyword. The Kotlin compiler ensures only one instance is ever created.\n\nExample:\nobject DatabaseManager {\n    fun getConnection() { }\n}\n\nThis is equivalent to Java's double-checked locking Singleton pattern but is much simpler and thread-safe by default."
+  },
+  {
+    "id": 131,
+    "category": "Kotlin Basics",
+    "question": "What is a suspend function in Kotlin Coroutines?",
+    "answer": "A suspend function is the fundamental building block of coroutines. It is a function that can be started, paused, and resumed without blocking the thread. It is declared using the suspend keyword.\n\nKey points:\n- A suspend function can only be called from another suspend function or from a coroutine scope.\n- It does not block the calling thread; it suspends the coroutine while waiting and releases the thread for other work.\n\nExample:\nsuspend fun fetchData(): String {\n    delay(1000) // suspends, not blocks\n    return \"Data\"\n}"
+  },
+  {
+    "id": 132,
+    "category": "Kotlin Basics",
+    "question": "What is the difference between FlatMap and Map in Kotlin?",
+    "answer": "map: Transforms each element of a list based on a given condition and returns a new list of the same size.\nExample: listOf(1, 2, 3).map { it * 2 } → [2, 4, 6]\n\nflatMap: Transforms each element into a list and then flattens all resulting lists into a single list.\nExample: listOf(listOf(1, 2), listOf(3, 4)).flatMap { it } → [1, 2, 3, 4]\n\nUse map for one-to-one transformations and flatMap when each element maps to multiple elements."
+  },
+  {
+    "id": 133,
+    "category": "Kotlin Basics",
+    "question": "What is the difference between a Thread and a Coroutine?",
+    "answer": "Thread:\n- Managed by the Operating System.\n- Heavy in memory (MBs per thread).\n- Context switching is expensive.\n- Blocking a thread wastes resources.\n\nCoroutine:\n- Managed by the Kotlin runtime.\n- Lightweight (only a few KB of memory).\n- Can be suspended and resumed without blocking the thread.\n- Many coroutines can run on a single thread.\n\nIn short, coroutines achieve concurrency with far less overhead than threads."
+  },
+  {
+    "id": 134,
+    "category": "Kotlin Basics",
+    "question": "What is the Elvis operator in Kotlin?",
+    "answer": "The Elvis operator (?:) is used to provide a default value when a nullable expression evaluates to null. It avoids explicit null checks.\n\nSyntax:\nval result = nullableValue ?: defaultValue\n\nExample:\nvar name: String? = null\nval nameLength = name?.length ?: -1\nprintln(nameLength) // prints -1 since name is null\n\nIf name is not null, it returns name.length. If it is null, it returns -1."
+  },
+  {
+    "id": 135,
+    "category": "Kotlin Basics",
+    "question": "What is the difference between a data class and a regular class in Kotlin?",
+    "answer": "Data class:\n- Designed specifically to hold data.\n- Automatically generates equals(), hashCode(), toString(), copy(), and componentN() functions.\n- Concise and reduces boilerplate code.\n- Declared using the data keyword.\n\nRegular class:\n- Can perform arbitrary operations and business logic.\n- Does not auto-generate equals(), hashCode(), or toString() unless overridden manually.\n\nUse data classes for model/entity objects (e.g., User, Product) and regular classes for classes with behavior and logic (e.g., ViewModel, Repository)."
+  }
 ]
