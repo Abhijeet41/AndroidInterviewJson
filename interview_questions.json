@@ -664,5 +664,11 @@
     "category": "RxJava & Dagger-Hilt",
     "question": "Why can we not use constructor injection in Activity, Fragment, BroadcastReceiver, WorkManager, and Service?",
     "answer": "These Android framework classes have their objects created and managed by the Android system. We have no control over their constructors or instantiation. Therefore, constructor injection is not possible. Instead, field injection using @Inject is used, which Dagger/Hilt performs after the object is created by the system."
-  }
+  },
+  {
+  "id": 112,
+  "category": "Kotlin Basics",
+  "question": "What is the difference between lateinit and lazy in Kotlin?",
+  "answer": "Both are used to delay property initialization in Kotlin.\n\nlateInit:\nUsed when we do not want to initialize a variable at declaration time but will initialize it before use.\n- Can only be used with the var keyword.\n- Can only be used with non-nullable types.\n- Should be used when the variable is mutable and will be initialized later.\n- You must ensure it is initialized before accessing it, otherwise UninitializedPropertyAccessException is thrown.\n\nlazy:\nUsed when object creation is expensive and we want to delay it until it is actually needed.\n- Can only be used with the val keyword.\n- The object is initialized only on the first access; subsequent accesses return the cached result.\n\nExample:\nclass Session {\n    private val mentor: Mentor by lazy { Mentor() }\n}\n\nHere, the Mentor object will not be created when Session is created. It will only be initialized the first time mentor is accessed. This leads to faster Session object creation since the expensive Mentor initialization is deferred."
+}
 ]
