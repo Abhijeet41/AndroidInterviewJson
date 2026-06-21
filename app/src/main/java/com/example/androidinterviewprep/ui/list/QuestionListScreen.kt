@@ -118,6 +118,30 @@ fun QuestionListContent(
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+fun PreviewQuestionListItem() {
+    MaterialTheme {
+        QuestionListItem(
+            questionText = "What is an Activity?",
+            isReviewed = true,
+            onClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewQuestionListItemNotReviewed() {
+    MaterialTheme {
+        QuestionListItem(
+            questionText = "What is a Fragment and how does it differ from an Activity?",
+            isReviewed = false,
+            onClick = {}
+        )
+    }
+}
+
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewQuestionListContent() {

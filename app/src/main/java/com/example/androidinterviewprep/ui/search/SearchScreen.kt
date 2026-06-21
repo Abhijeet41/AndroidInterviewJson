@@ -132,6 +132,25 @@ fun SearchScreenContent(
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+fun PreviewSearchResultItem() {
+    val mockQuestion = Question(
+        id = 1,
+        category = "Android",
+        question = "What is an Intent?",
+        answer = "An Intent is a messaging object you can use to request an action from another app component."
+    )
+    MaterialTheme {
+        Box(modifier = Modifier.padding(16.dp)) {
+            SearchResultItem(
+                question = mockQuestion,
+                onClick = {}
+            )
+        }
+    }
+}
+
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewSearchPlaceholder() {

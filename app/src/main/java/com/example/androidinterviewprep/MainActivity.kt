@@ -184,6 +184,7 @@ fun MainAppContent() {
             ) { backStackEntry ->
                 val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
                 val questionId = backStackEntry.arguments?.getInt("questionId") ?: 0
+
                 QuestionDetailScreen(
                     categoryName = categoryName,
                     questionId = questionId,

@@ -3,48 +3,810 @@
     "id": 1,
     "category": "Android Basics",
     "question": "What are Android application components?",
-    "answer": "Application components are the essential building blocks of an Android app. The four main components are:\n1. Activities: UI screen components that represent a single screen with a user interface.\n2. Services: Background components that run without user interaction (e.g., playing music, fetching network data).\n3. Broadcast Receivers: Listeners that receive and respond to system-wide announcements or intents from other apps.\n4. Content Providers: Manage shared data access across different applications (e.g., accessing contacts data)."
+    "answer": "Application components are the essential building blocks of an Android application, loosely coupled via AndroidManifest.xml. The four components are:\n1) Activity – represents a single screen with a UI.\n2) Service – runs in the background for long-running operations.\n3) Broadcast Receiver – listens for and responds to system/app-wide events.\n4) Content Provider – supplies data from one application to others on request."
   },
   {
     "id": 2,
     "category": "Android Basics",
-    "question": "Describe the Activity Lifecycle.",
-    "answer": "An activity goes through several lifecycle states:\n- onCreate(): Called when the activity is first created. Setup UI and variables here.\n- onStart(): Makes the activity visible to the user.\n- onResume(): Makes the activity interactive. This is where user interaction starts.\n- onPause(): Called when another activity comes into focus. Save unsaved data or pause animations.\n- onStop(): Called when the activity is no longer visible.\n- onDestroy(): Called before the activity is destroyed, ideal for clearing resources."
+    "question": "What is Context in Android?",
+    "answer": "Context represents the current state of the application/object. It provides access to application-specific resources and classes, and is used to perform app-level operations. You can get it via getApplicationContext() or getContext()."
   },
   {
     "id": 3,
-    "category": "Architecture Components",
-    "question": "What is MVVM and why is it preferred in Android development?",
-    "answer": "MVVM (Model-View-ViewModel) separates an app's UI (View) from its business logic (Model) using a ViewModel as an intermediary:\n1. View: Displays UI elements and forwards user inputs. It observes state changes in the ViewModel.\n2. ViewModel: Exposes state to the View and handles presentation logic. It survives configuration changes (like screen rotation).\n3. Model: Contains data sources (local database, network API) and business logic.\nMVVM is preferred because it facilitates unit testing, decouples UI from business logic, and works seamlessly with Jetpack Compose."
+    "category": "Android Basics",
+    "question": "What is the Application class in Android?",
+    "answer": "The Application class is the base class of an Android app that contains all other components such as Activities and Services. It is instantiated before any other class when the process for your application/package is created."
   },
   {
     "id": 4,
-    "category": "OOP Concepts",
-    "question": "What is the difference between an Interface and an Abstract Class in Kotlin?",
-    "answer": "Key differences in Kotlin:\n1. Multiple Inheritance: A class can implement multiple interfaces but can extend only one abstract class.\n2. Constructor: Abstract classes can have constructors and hold state, while interfaces cannot hold state (properties in interfaces cannot have backing fields).\n3. Use Cases: Use abstract classes to define a base class for closely related classes that share implementation. Use interfaces to define a contract of behavior that can be implemented by unrelated classes."
+    "category": "Android Basics",
+    "question": "What is an Activity and what is its lifecycle?",
+    "answer": "An Activity represents a single screen with a user interface. Its lifecycle callbacks are:\n1) onCreate() – called when the activity is first created.\n2) onStart() – called when activity becomes visible to the user.\n3) onResume() – called when activity starts interacting with the user.\n4) onPause() – called when activity is no longer in the foreground.\n5) onStop() – called when activity is no longer visible.\n6) onRestart() – called after activity is stopped, before starting again.\n7) onDestroy() – called before the activity is destroyed."
   },
   {
     "id": 5,
-    "category": "Services & Background",
-    "question": "What is WorkManager and when should it be used?",
-    "answer": "WorkManager is the recommended Android Jetpack library for persistent, deferrable background work. It is designed for tasks that must run even if the app restarts or the device reboots.\nKey features:\n- Respects system constraints (e.g., network availability, charging state).\n- Handles one-time or periodic tasks.\n- Guarantees execution.\nUse cases include: uploading logs, syncing local database data with a remote server, or applying image filters in the background."
+    "category": "Android Basics",
+    "question": "What is the difference between onCreate() and onStart()?",
+    "answer": "onCreate() is called when the activity is first created (runs only once). onStart() is called every time the activity becomes visible to the user, including after it is stopped and restarted."
   },
   {
     "id": 6,
-    "category": "Unit Testing",
-    "question": "What is the difference between local unit tests and instrumented tests?",
-    "answer": "1. Local Unit Tests (test directory): Run on the JVM of your local computer. They do not have access to real Android framework APIs (unless mocked, e.g., with Mockito) and run very fast.\n2. Instrumented Tests (androidTest directory): Run on a real or virtual Android device. They compile into a separate test APK alongside your app, giving them full access to the Android context and framework APIs. They are slower but test actual integration and UI behaviors."
+    "category": "Android Basics",
+    "question": "What is the difference between onPause() and onStop()?",
+    "answer": "onPause() is called when the activity is about to lose focus but may still be partially visible. onStop() is called when the activity is fully hidden and no longer visible to the user."
   },
   {
     "id": 7,
-    "category": "RxJava & Dagger-Hilt",
-    "question": "What is Dependency Injection and why is Hilt used in Android?",
-    "answer": "Dependency Injection (DI) is a software design pattern where objects do not create their own dependencies, but rather receive them from an external provider.\nHilt is Google's opinionated DI library built on top of Dagger. It is preferred because:\n- It reduces boilerplates compared to raw Dagger.\n- It integrates directly with Android lifecycle components (e.g., ViewModel, Activity, Fragment).\n- It provides standard scopes and components out-of-the-box (e.g., @Singleton, @ActivityScoped)."
+    "category": "Android Basics",
+    "question": "What is onSaveInstanceState() and onRestoreInstanceState()?",
+    "answer": "onSaveInstanceState() is used to store data before the activity is paused or destroyed (e.g., due to rotation). onRestoreInstanceState() is used to recover the saved state when the activity is recreated after destruction."
   },
   {
     "id": 8,
+    "category": "Android Basics",
+    "question": "What is a Fragment and what is its lifecycle?",
+    "answer": "A Fragment is a reusable portion of the UI hosted inside an Activity. Its lifecycle: onAttach() → onCreate() → onCreateView() → onActivityCreated() → onViewStateRestored() → onStart() → onResume() → onPause() → onStop() → onDestroyView() → onDestroy() → onDetach()."
+  },
+  {
+    "id": 9,
+    "category": "Android Basics",
+    "question": "What are launch modes in Android?",
+    "answer": "Launch modes define how an Activity is launched into the back stack:\n1) standard – creates a new instance every time (default).\n2) singleTop – reuses the existing instance if it is at the top of the stack.\n3) singleTask – creates a new task and a single instance; pops all activities above it if it already exists.\n4) singleInstance – same as singleTask but no other activity can be in the same task."
+  },
+  {
+    "id": 10,
+    "category": "Android Basics",
+    "question": "When should you use a Fragment rather than an Activity?",
+    "answer": "Use a Fragment when you have UI components to be reused across various activities, or when multiple views need to be displayed side-by-side (e.g., ViewPager, tablet layouts)."
+  },
+  {
+    "id": 11,
+    "category": "Android Basics",
+    "question": "What is the purpose of addToBackStack() during a Fragment transaction?",
+    "answer": "By calling addToBackStack(), the fragment transaction is saved to the back stack so the user can reverse the transaction and bring back the previous fragment by pressing the Back button."
+  },
+  {
+    "id": 12,
+    "category": "Android Basics",
+    "question": "What is the difference between View and ViewGroup?",
+    "answer": "View is the basic building block for UI elements (e.g., Button, EditText, CheckBox). ViewGroup is an invisible container that holds Views and other ViewGroups (e.g., LinearLayout, ConstraintLayout)."
+  },
+  {
+    "id": 13,
+    "category": "Android Basics",
+    "question": "What is the difference between LinearLayout and RelativeLayout?",
+    "answer": "LinearLayout arranges child views either horizontally or vertically in a single row/column. RelativeLayout positions child views relative to each other or to the parent container."
+  },
+  {
+    "id": 14,
+    "category": "Android Basics",
+    "question": "What is ConstraintLayout?",
+    "answer": "ConstraintLayout is a ViewGroup that allows you to position and size widgets in a flexible, flat hierarchy using constraints, reducing nested layouts and improving performance."
+  },
+  {
+    "id": 15,
+    "category": "Android Basics",
+    "question": "What is an Intent in Android? What are its types?",
+    "answer": "An Intent is a system object used to start an Activity, Service, or Broadcast Receiver.\n1) Explicit Intent – you specify the target component (e.g., navigating from Activity A to B).\n2) Implicit Intent – you declare a general action and the system decides which component handles it."
+  },
+  {
+    "id": 16,
+    "category": "Android Basics",
+    "question": "What is a PendingIntent?",
+    "answer": "A PendingIntent is a wrapper around an Intent that allows another application or the system to perform the Intent operation at a future point in time on behalf of your application."
+  },
+  {
+    "id": 17,
+    "category": "Android Basics",
+    "question": "What is a RecyclerView and what are its advantages over ListView?",
+    "answer": "RecyclerView is an advanced and flexible version of ListView/GridView. Advantages include: built-in ViewHolder pattern for view recycling, support for multiple layout managers (Linear, Grid, StaggeredGrid), better performance, item animations, and DiffUtil support."
+  },
+  {
+    "id": 18,
+    "category": "Android Basics",
+    "question": "What is the difference between Parcelable and Serializable?",
+    "answer": "Both allow passing objects between Activities. Serializable is a standard Java interface and is easy to implement but slow due to reflection and temporary object creation. Parcelable is Android-specific, much faster, and is the recommended approach."
+  },
+  {
+    "id": 19,
+    "category": "Android Basics",
+    "question": "What is the difference between View.INVISIBLE and View.GONE?",
+    "answer": "INVISIBLE hides the view but it still occupies space in the layout. GONE hides the view and removes it from the layout entirely, freeing up the space it occupied."
+  },
+  {
+    "id": 20,
+    "category": "Android Basics",
+    "question": "What is ANR in Android?",
+    "answer": "ANR stands for Application Not Responding. It occurs when the main/UI thread is blocked for too long (typically 5 seconds). To prevent ANR, always perform heavy or long-running operations on a background thread."
+  },
+  {
+    "id": 21,
+    "category": "Android Basics",
+    "question": "What is SharedPreferences and what is the difference between commit() and apply()?",
+    "answer": "SharedPreferences is used to store small amounts of primitive data as key-value pairs (e.g., login details). Differences:\n- apply() is asynchronous, faster, and does not return a success/failure result.\n- commit() is synchronous, slower, and returns true/false indicating success or failure."
+  },
+  {
+    "id": 22,
+    "category": "Android Basics",
+    "question": "What are the different Android Permission protection levels?",
+    "answer": "1) Normal – low-risk permissions granted automatically (e.g., INTERNET, ACCESS_WIFI_STATE).\n2) Dangerous – require explicit user approval at runtime (e.g., CAMERA, READ_CONTACTS).\n3) Signature – granted only if the requesting app is signed with the same certificate as the declaring app (e.g., BIND_WALLPAPER)."
+  },
+  {
+    "id": 23,
+    "category": "Android Basics",
+    "question": "What is a Broadcast Receiver and what are its types?",
+    "answer": "A Broadcast Receiver listens for and responds to system or app-wide broadcast messages. Types:\n1) Static Broadcast Receiver – declared in the manifest, works even when the app is closed.\n2) Dynamic Broadcast Receiver – registered programmatically, works only while the app is active or minimized."
+  },
+  {
+    "id": 24,
+    "category": "Android Basics",
+    "question": "What is the difference between Global and Local Broadcast Receiver?",
+    "answer": "Global Broadcast Receiver can send/receive messages between different applications. Local Broadcast Receiver (LocalBroadcastManager) restricts broadcasts to within the same application, making it more secure and efficient."
+  },
+  {
+    "id": 25,
+    "category": "Android Basics",
+    "question": "How do push notifications work in Android?",
+    "answer": "1) Register your app on Firebase to get a server key.\n2) When the app launches, it registers with Google's FCM server and receives a unique FCM token.\n3) The token is sent to your backend server. The server uses the token + server key to send a notification to FCM.\n4) FCM identifies the device by package name and delivers the notification."
+  },
+  {
+    "id": 26,
+    "category": "Android Basics",
+    "question": "What is the difference between finish() and finishAffinity()?",
+    "answer": "finish() destroys only the current Activity (calls onDestroy()). finishAffinity() removes the current activity and all activities below it in the same task that share the same affinity."
+  },
+  {
+    "id": 27,
+    "category": "Android Basics",
+    "question": "What is ViewPager2 and how does it differ from ViewPager?",
+    "answer": "ViewPager2 is an updated version of ViewPager. Improvements include: built on RecyclerView (supports view recycling), supports vertical orientation, supports DiffUtil for animated data-set changes, and provides better API for fragments."
+  },
+  {
+    "id": 28,
+    "category": "Android Basics",
+    "question": "What is multidex in Android?",
+    "answer": "If an app has more than 64K methods, Android cannot fit everything in a single DEX file. Multidex allows creating multiple DEX files for the app. It is enabled by adding multidex support in the build.gradle and extending MultiDexApplication."
+  },
+  {
+    "id": 29,
+    "category": "Android Basics",
+    "question": "What is DiffUtil and what are its benefits?",
+    "answer": "DiffUtil is a utility class that calculates the difference between two lists and generates efficient update operations for RecyclerView. It minimizes re-draws, supports item animations, and improves scrolling performance."
+  },
+  {
+    "id": 30,
+    "category": "Android Basics",
+    "question": "What is a 9-patch image in Android?",
+    "answer": "A 9-patch image is a stretchable PNG image that defines specific regions that can scale without pixelating. It is used for backgrounds that must wrap content of varying sizes (e.g., chat bubbles, button backgrounds)."
+  },
+  {
+    "id": 31,
+    "category": "Android Basics",
+    "question": "What is SQLite and SQLiteOpenHelper?",
+    "answer": "SQLite is a self-contained, serverless relational database built into Android. SQLiteOpenHelper is a helper class used for database creation and version management. You override onCreate() (to create tables) and onUpgrade() (to handle schema changes)."
+  },
+  {
+    "id": 32,
+    "category": "Android Basics",
+    "question": "What is EventBus in Android?",
+    "answer": "EventBus is an event library for Android that uses a publisher-subscriber pattern for loose coupling. It simplifies communication between different components (Activities, Fragments, Services) without direct references. Subscribers use the @Subscribe annotation to handle events."
+  },
+  {
+    "id": 33,
+    "category": "Architecture Components",
+    "question": "What are Android Architecture Components?",
+    "answer": "Architecture Components are a set of Jetpack libraries to help build robust, testable, and maintainable apps. They include: Data Binding, Lifecycles, LiveData, Navigation, Paging, Room, ViewModel, and WorkManager."
+  },
+  {
+    "id": 34,
+    "category": "Architecture Components",
+    "question": "What is the difference between DataBinding and ViewBinding?",
+    "answer": "ViewBinding generates a binding class for each XML layout without needing to wrap the root layout in a <layout> tag. DataBinding also supports binding UI components directly to data sources using expressions in XML, enabling two-way binding and reducing boilerplate code."
+  },
+  {
+    "id": 35,
+    "category": "Architecture Components",
+    "question": "What is LiveData? What are its advantages?",
+    "answer": "LiveData is a lifecycle-aware observable data holder that is immutable by default (you can only observe, not set values directly). Advantages:\n1) Survives configuration changes as it lives inside ViewModel.\n2) Observers are automatically cleaned up when their lifecycle is destroyed, preventing memory leaks.\n3) No memory leak since ViewModel holds no reference to the Activity."
+  },
+  {
+    "id": 36,
+    "category": "Architecture Components",
+    "question": "What is the difference between LiveData, MutableLiveData, and MediatorLiveData?",
+    "answer": "LiveData is immutable – you can only observe it. MutableLiveData is a subclass of LiveData that allows setting values using setValue() (main thread) or postValue() (background thread). MediatorLiveData is a subclass of MutableLiveData that can observe multiple LiveData sources and react to their changes."
+  },
+  {
+    "id": 37,
+    "category": "Architecture Components",
+    "question": "What is the Navigation Component in Android?",
+    "answer": "The Navigation Component simplifies fragment transactions and back-stack management. Benefits include: automatic handling of Up/Back actions, safe argument passing via NavArgs, visual navigation graph, and deep link support."
+  },
+  {
+    "id": 38,
+    "category": "Architecture Components",
+    "question": "What is the Paging Library?",
+    "answer": "The Paging Library helps load and display data in small chunks (pages) at a time, reducing network bandwidth and memory usage. It integrates with RecyclerView and supports Room and Retrofit."
+  },
+  {
+    "id": 39,
+    "category": "Architecture Components",
+    "question": "What is Room and what are its main components?",
+    "answer": "Room is a Jetpack ORM library providing an abstraction layer over SQLite. Its three main components are:\n1) Entity – a data class annotated with @Entity representing a database table.\n2) DAO (Data Access Object) – an interface annotated with @Dao that defines database operations.\n3) Database – an abstract class annotated with @Database that ties entities and DAOs together."
+  },
+  {
+    "id": 40,
+    "category": "Architecture Components",
+    "question": "What is ViewModel in Android?",
+    "answer": "ViewModel is a lifecycle-aware class designed to store and manage UI-related data. It survives configuration changes (like screen rotation), preventing data loss and unnecessary re-fetching."
+  },
+  {
+    "id": 41,
+    "category": "Architecture Components",
+    "question": "What is ViewModelProvider.Factory and when should you use it?",
+    "answer": "ViewModelProvider.Factory is an interface with a create() method responsible for instantiating ViewModels. Use it when your ViewModel has constructor dependencies (e.g., a Repository), allowing you to inject those dependencies and also making the ViewModel testable."
+  },
+  {
+    "id": 42,
+    "category": "Architecture Components",
+    "question": "What is a Repository in Android MVVM?",
+    "answer": "The Repository acts as a single source of truth for data. When the ViewModel requests data, the Repository decides whether to fetch it from the local database (Room) or a remote source (API), abstracting the data origin from the ViewModel."
+  },
+  {
+    "id": 43,
+    "category": "Architecture Components",
+    "question": "What is WorkManager and what types of work requests does it support?",
+    "answer": "WorkManager is a Jetpack library for deferrable, guaranteed background work that must run even if the app exits or the device restarts. It supports:\n1) OneTimeWorkRequest – for non-repeating tasks.\n2) PeriodicWorkRequest – for repeating tasks (minimum interval: 15 minutes)."
+  },
+  {
+    "id": 44,
+    "category": "Architecture Components",
+    "question": "What is the difference between FragmentPagerAdapter and FragmentStatePagerAdapter?",
+    "answer": "FragmentPagerAdapter stores the entire fragment in memory for all pages (good for a small number of tabs). FragmentStatePagerAdapter only stores the savedInstanceState and destroys fragments that lose focus, making it memory-efficient for a large number of pages."
+  },
+  {
+    "id": 45,
+    "category": "Architecture Components",
+    "question": "What is Clean Architecture in Android?",
+    "answer": "Clean Architecture extends MVVM by adding a Domain layer with Use Cases that contain all business logic. This prevents the ViewModel from becoming bloated. Advantages: easier to test, better separation of concerns. Disadvantage: extra classes and time-consuming to set up initially."
+  },
+  {
+    "id": 46,
+    "category": "Architecture Components",
+    "question": "What are the three layers of Clean Architecture?",
+    "answer": "1) Presentation – UI layer containing Composables, XMLs, and ViewModels.\n2) Domain – Business logic layer containing Use Cases, domain models, and repository interfaces.\n3) Data – Data layer containing repository implementations, DTOs, API services, Room DAOs, and entities."
+  },
+  {
+    "id": 47,
+    "category": "Architecture Components",
+    "question": "What is a DTO (Data Transfer Object)?",
+    "answer": "A DTO is the object returned by an API. Since APIs often return more data than needed, DTOs are lighter models that contain only the data required for the UI. They are mapped to domain models in the data layer."
+  },
+  {
+    "id": 48,
+    "category": "Architecture Components",
+    "question": "What is a Use Case and why do we need it?",
+    "answer": "A Use Case encapsulates a single business action within a feature (e.g., GetUserProfileUseCase). It solves the problem of ViewModels becoming bloated with logic in large projects and eliminates code duplication when the same business logic is needed in multiple ViewModels."
+  },
+  {
+    "id": 49,
+    "category": "Architecture Components",
+    "question": "What are SOLID principles?",
+    "answer": "1) Single Responsibility – a class should have only one reason to change.\n2) Open/Closed – open for extension, closed for modification (use interfaces/abstractions).\n3) Liskov Substitution – subclasses should be interchangeable with their base class without breaking functionality.\n4) Interface Segregation – prefer many small interfaces over one large one.\n5) Dependency Inversion – depend on abstractions, not concrete implementations."
+  },
+  {
+    "id": 50,
+    "category": "Architecture Components",
+    "question": "What is CI/CD in Android development?",
+    "answer": "CI/CD automates software delivery throughout the development lifecycle. Continuous Integration (CI) automatically builds and tests code when changes are committed to detect issues early. Continuous Delivery (CD) ensures the software is always in a deployable state, with automated or manual deployment to production."
+  },
+  {
+    "id": 51,
+    "category": "Architecture Components",
+    "question": "What is multi-module architecture and what are its advantages?",
+    "answer": "Multi-module architecture splits a project into multiple Gradle modules. Advantages: code reuse across modules, improved build times (only changed modules are recompiled), better readability, and easier maintenance. Disadvantage: time-consuming to set up and not suited for small-scale apps."
+  },
+  {
+    "id": 52,
+    "category": "Services & Background",
+    "question": "What is a Service in Android and what are its types?",
+    "answer": "A Service is a component that runs in the background to perform long-running operations without a UI.\n1) Foreground Service – stays alive even when the app is terminated (e.g., music player).\n2) Background Service – runs only while the app is running.\n3) Bound Service – lives as long as a component is bound to it; destroyed when all clients unbind."
+  },
+  {
+    "id": 53,
+    "category": "Services & Background",
+    "question": "What is the difference between a Started Service and a Bound Service?",
+    "answer": "A Started Service is launched by startService() and runs indefinitely in the background even after the calling component is destroyed. A Bound Service is launched by bindService() and runs only as long as at least one component is bound to it."
+  },
+  {
+    "id": 54,
+    "category": "Services & Background",
+    "question": "What is an IntentService?",
+    "answer": "IntentService is a special type of Service that automatically creates its own worker thread and processes intents sequentially (one at a time). It stops itself once all work is done. Note: IntentService is deprecated in API 30; use WorkManager or JobIntentService instead."
+  },
+  {
+    "id": 55,
+    "category": "Services & Background",
+    "question": "What are the Service lifecycle methods?",
+    "answer": "1) onCreate() – called when the service is first created.\n2) onStartCommand() – called when startService() is invoked; service runs indefinitely.\n3) onBind() – called when a component binds to the service; must return an IBinder.\n4) onDestroy() – called when the service is stopped and being destroyed."
+  },
+  {
+    "id": 56,
+    "category": "Services & Background",
+    "question": "What is the difference between Bound and Unbound Services?",
+    "answer": "Unbound (Started) Service runs indefinitely in the background and is independent of the component that started it — must be stopped via stopSelf() or stopService(). Bound Service only runs as long as a component is bound to it and stops automatically when all clients unbind."
+  },
+  {
+    "id": 57,
+    "category": "Services & Background",
+    "question": "What is Retrofit?",
+    "answer": "Retrofit is a type-safe HTTP client for Android developed by Square. It turns a REST API into a Java/Kotlin interface and supports both synchronous and asynchronous requests with automatic JSON parsing via converters like Gson or Moshi."
+  },
+  {
+    "id": 58,
+    "category": "Services & Background",
+    "question": "What is Volley?",
+    "answer": "Volley is a Google networking library for Android that supports synchronous/asynchronous requests, request prioritization, multiple concurrent requests, ordered requests, and automatic caching."
+  },
+  {
+    "id": 59,
+    "category": "Services & Background",
+    "question": "What is AlarmManager and when is it used?",
+    "answer": "AlarmManager is used to schedule tasks to run at specific times or intervals (e.g., daily data sync, reminders, alarms). It can wake up the device to run tasks and initiate long-running background operations."
+  },
+  {
+    "id": 60,
+    "category": "Services & Background",
+    "question": "What is SSL Pinning in Android?",
+    "answer": "SSL Pinning enforces that the app only communicates with servers whose public key or certificate hash matches a value stored in the app. This prevents man-in-the-middle attacks even when a trusted CA is compromised. It is implemented by comparing the server's certificate hash during the SSL handshake."
+  },
+  {
+    "id": 61,
+    "category": "Services & Background",
+    "question": "What is the difference between Symmetric and Asymmetric Encryption?",
+    "answer": "Symmetric Encryption uses the same key for encryption and decryption, making key distribution a security risk. Asymmetric Encryption (e.g., RSA) uses a public key to encrypt and a private key (held only by the server) to decrypt, eliminating the key-sharing problem. HTTPS, SSL, and Bitcoin use asymmetric encryption."
+  },
+  {
+    "id": 62,
+    "category": "Services & Background",
+    "question": "What is AsyncTask and what are its methods?",
+    "answer": "AsyncTask is an abstract class that allows short background operations to run asynchronously and publish results on the UI thread. Its main methods:\n1) onPreExecute() – setup before background work.\n2) doInBackground() – performs the actual background task.\n3) onProgressUpdate() – updates UI with progress.\n4) onPostExecute() – delivers result to the UI thread.\nNote: AsyncTask is deprecated in API 30."
+  },
+  {
+    "id": 63,
     "category": "Design Patterns",
-    "question": "Explain the Repository Pattern.",
-    "answer": "The Repository Pattern acts as a mediator between data sources (e.g., Room database, Retrofit API) and the rest of the application (e.g., ViewModels).\nBenefits:\n1. Separation of Concerns: ViewModels do not need to know where the data comes from (network or database).\n2. Caching Strategy: The repository can implement logic to decide whether to fetch fresh data from the network or load cached data from a local database/cache.\n3. Testing: It allows easy mocking of data sources for unit testing."
+    "question": "What are the three categories of Design Patterns?",
+    "answer": "1) Creational Patterns – how objects are created (e.g., Builder, Singleton, Factory, Dependency Injection).\n2) Structural Patterns – how objects are composed (e.g., Adapter, Decorator).\n3) Behavioural Patterns – how objects interact (e.g., Observer, Strategy)."
+  },
+  {
+    "id": 64,
+    "category": "Design Patterns",
+    "question": "What is the Builder Design Pattern?",
+    "answer": "The Builder pattern is a creational pattern that constructs complex objects step by step, separating the construction from its representation. In Android, it is used for Dialogs, Notifications, and Retrofit setup. In Kotlin, it is idiomatically implemented using apply{}."
+  },
+  {
+    "id": 65,
+    "category": "Design Patterns",
+    "question": "What is the Singleton Design Pattern?",
+    "answer": "Singleton ensures only one instance of a class is created throughout the app's lifecycle. In Kotlin, use the 'object' keyword. In Java, use a private constructor with a thread-safe getInstance() method using double-checked locking with the 'synchronized' and 'volatile' keywords."
+  },
+  {
+    "id": 66,
+    "category": "Design Patterns",
+    "question": "What is the Observer Design Pattern?",
+    "answer": "The Observer pattern defines a one-to-many dependency: when one object (subject) changes state, all dependents (observers) are notified automatically. In Android, LiveData and RxJava are built on this pattern. It is used for event-driven UI updates and inter-component communication."
+  },
+  {
+    "id": 67,
+    "category": "Design Patterns",
+    "question": "What is the Factory Design Pattern?",
+    "answer": "The Factory pattern creates objects without exposing the creation logic to the caller, using a common interface to refer to newly created objects. In Android, it is used to centralize and encapsulate object creation logic (e.g., creating different types of API clients)."
+  },
+  {
+    "id": 68,
+    "category": "Design Patterns",
+    "question": "What is the difference between abstract class and interface?",
+    "answer": "Abstract class: can have abstract and non-abstract methods, does not support multiple inheritance, can have any access modifiers, can have instance variables.\nInterface: can only have abstract methods (and default/static in Java 8+), supports multiple inheritance, members are public by default, only static and final variables.\nUse abstract class for shared base behavior; use interface for defining contracts."
+  },
+  {
+    "id": 69,
+    "category": "RxJava & Dagger-Hilt",
+    "question": "What is RxJava?",
+    "answer": "RxJava is a JVM library for composing asynchronous and event-based programs using observable sequences. It is used in Android for managing background tasks, chaining API calls, and handling complex data streams."
+  },
+  {
+    "id": 70,
+    "category": "RxJava & Dagger-Hilt",
+    "question": "What are the types of Observables in RxJava?",
+    "answer": "1) Observable – emits multiple items or none.\n2) Single – emits exactly one item or an error.\n3) Maybe – emits one item, no item, or an error.\n4) Completable – completes without emitting any item (fire and forget).\n5) Flowable – like Observable but supports backpressure for high-volume data streams."
+  },
+  {
+    "id": 71,
+    "category": "RxJava & Dagger-Hilt",
+    "question": "What is Backpressure in RxJava?",
+    "answer": "Backpressure is the state where an Observable emits more items than its Observer can consume. Flowable handles backpressure using strategies like BUFFER, DROP, and LATEST. Using a regular Observable without backpressure handling can result in MissingBackpressureException or OutOfMemoryError."
+  },
+  {
+    "id": 72,
+    "category": "RxJava & Dagger-Hilt",
+    "question": "What is CompositeDisposable in RxJava?",
+    "answer": "CompositeDisposable is a container that holds multiple Disposable objects. It allows you to dispose (unsubscribe) all of them at once, typically in onPause() or onDestroy(), preventing memory leaks."
+  },
+  {
+    "id": 73,
+    "category": "RxJava & Dagger-Hilt",
+    "question": "What are RxJava Schedulers?",
+    "answer": "Schedulers control which thread an Observable operates on. Common schedulers:\n- Schedulers.io() – for I/O operations (network, file system).\n- Schedulers.computation() – for CPU-intensive work.\n- AndroidSchedulers.mainThread() – for UI updates on the main thread.\nUse subscribeOn() to set the emission thread and observeOn() to set the observation thread."
+  },
+  {
+    "id": 74,
+    "category": "RxJava & Dagger-Hilt",
+    "question": "What is Dagger-Hilt and why is it used?",
+    "answer": "Dagger Hilt is a dependency injection framework for Android built on top of Dagger 2. It simplifies DI by providing standard components and scopes for Android classes. Use @HiltAndroidApp on the Application class, and @AndroidEntryPoint on Activities, Fragments, Services, etc."
+  },
+  {
+    "id": 75,
+    "category": "RxJava & Dagger-Hilt",
+    "question": "What are the key Dagger 2 annotations?",
+    "answer": "@Module – class that provides dependencies.\n@Provides – method inside @Module that returns the dependency instance.\n@Inject – requests a dependency injection (used on constructor, field, or method).\n@Component – bridge between @Module and @Inject.\n@Singleton – ensures only one instance of the dependency is created.\n@Scope – defines a custom lifecycle scope.\n@Qualifier – allows multiple instances of the same type.\n@Binds – binds an interface to its implementation in an abstract module."
+  },
+  {
+    "id": 76,
+    "category": "RxJava & Dagger-Hilt",
+    "question": "When do you use constructor injection vs field injection in Dagger?",
+    "answer": "Constructor injection is used when you own the class and control its constructor (e.g., your own ViewModels, Repositories). Field injection is used for Android framework classes like Activities and Fragments where you cannot control the constructor, or for third-party libraries (Retrofit, Room) where object creation uses a builder pattern."
+  },
+  {
+    "id": 77,
+    "category": "Unit Testing",
+    "question": "What is the purpose of unit testing?",
+    "answer": "Unit testing aims to identify bugs at an early stage and ensure that individual units of code work as expected. It also helps write modular code and makes it easier to add new features without breaking existing functionality."
+  },
+  {
+    "id": 78,
+    "category": "Unit Testing",
+    "question": "What are the two types of tests in Android?",
+    "answer": "1) Local Unit Tests (JVM Tests) – run on the JVM without a device, fast, placed in the test/ folder (e.g., ViewModel logic, data transformations).\n2) Instrumentation Tests (On-Device Tests) – require a physical device or emulator, used when Android Context is needed, placed in the androidTest/ folder."
+  },
+  {
+    "id": 79,
+    "category": "Unit Testing",
+    "question": "What are the common JUnit annotations used in unit testing?",
+    "answer": "@Test – marks a method as a test case.\n@Before – runs before each test (setup).\n@BeforeClass – runs once before all tests in the class.\n@After – runs after each test (teardown).\n@AfterClass – runs once after all tests.\n@Ignore – skips the test.\n@Test(timeout=500) – fails the test if it exceeds the specified time."
+  },
+  {
+    "id": 80,
+    "category": "Unit Testing",
+    "question": "What is Mockito and what are the benefits of mocking?",
+    "answer": "Mockito is a mocking framework that creates fake (mock) objects for dependencies, isolating the unit under test.\nBenefits:\n1) Deterministic – tests are reliable as behavior is predefined.\n2) Speed – no real network or database calls needed.\n3) Parallel Development – test against a fake implementation even before the real one is ready."
+  },
+  {
+    "id": 81,
+    "category": "Unit Testing",
+    "question": "What is the best way to test Kotlin Coroutines in unit tests?",
+    "answer": "Use runTest{} instead of runBlocking{}. runTest is coroutine-test aware and automatically skips delays, making tests execute much faster. Also use advanceUntilIdle() to ensure all coroutines complete before checking assertions."
+  },
+  {
+    "id": 82,
+    "category": "Unit Testing",
+    "question": "What is advanceUntilIdle() in coroutine testing?",
+    "answer": "advanceUntilIdle() advances the test coroutine scheduler until there are no more pending coroutines. It is used before calling assertEquals() to ensure all coroutines have finished executing."
+  },
+  {
+    "id": 83,
+    "category": "Unit Testing",
+    "question": "What is a MockWebServer?",
+    "answer": "MockWebServer (from OkHttp) simulates a real HTTP server locally without making actual network calls. Benefits:\n- Avoids API rate limits.\n- Reduces costs for paid APIs.\n- Enables faster development even before real APIs are ready."
+  },
+  {
+    "id": 84,
+    "category": "Unit Testing",
+    "question": "What is the difference between @Rule and @Before in JUnit?",
+    "answer": "@Before is a method annotation that runs setup code before each test within a single class. @Rule is an instance-level mechanism that applies reusable setup/teardown logic across multiple test classes, enabling sharing of common infrastructure."
+  },
+  {
+    "id": 85,
+    "category": "Unit Testing",
+    "question": "What is JUnit rules and why are they used?",
+    "answer": "JUnit rules make tests more flexible by allowing you to use multiple rules in the same test class (unlike runners, where only one can be used at a time). They are used to avoid duplicating @Before/@After logic across multiple test classes."
+  },
+  {
+    "id": 86,
+    "category": "OOP Concepts",
+    "question": "What are the four pillars of Object-Oriented Programming?",
+    "answer": "1) Inheritance – a class acquires properties and behavior from another class.\n2) Encapsulation – wrapping data and methods into a single unit; achieved via private variables and public getters/setters.\n3) Abstraction – hiding implementation details and showing only functionality to the user.\n4) Polymorphism – the ability to perform the same action in different ways, achieved via method overloading and method overriding."
+  },
+  {
+    "id": 87,
+    "category": "OOP Concepts",
+    "question": "What are the types of Inheritance in Java?",
+    "answer": "1) Single – one class extends one class.\n2) Multilevel – a class extends a derived class.\n3) Hierarchical – one class is extended by multiple subclasses.\n4) Hybrid – combination of Single and Multiple inheritance.\nNote: Java does not support Multiple Inheritance for classes to avoid the Diamond Problem, but it can be achieved via interfaces."
+  },
+  {
+    "id": 88,
+    "category": "OOP Concepts",
+    "question": "What is the Diamond Problem in Java?",
+    "answer": "The Diamond Problem occurs in multiple inheritance when a subclass inherits from two classes that both have a method with the same name, causing ambiguity for the compiler. Java solves this by not allowing multiple class inheritance, but interfaces with default methods can be used instead."
+  },
+  {
+    "id": 89,
+    "category": "OOP Concepts",
+    "question": "What is Polymorphism? What is the difference between method overloading and overriding?",
+    "answer": "Polymorphism means performing one action in different ways.\n- Method Overloading (compile-time): same method name, different parameters, in the same class.\n- Method Overriding (runtime): redefining a parent class method in a subclass with the same signature."
+  },
+  {
+    "id": 90,
+    "category": "OOP Concepts",
+    "question": "What are Java access modifiers?",
+    "answer": "private – accessible only within the declaring class.\ndefault (package-private) – accessible within the same package.\nprotected – accessible within the package and by subclasses outside the package.\npublic – accessible from everywhere."
+  },
+  {
+    "id": 91,
+    "category": "OOP Concepts",
+    "question": "What is the Java Collections Framework?",
+    "answer": "The Collections Framework provides an architecture to store and manipulate groups of objects. Key interfaces: List (ordered, allows duplicates), Set (unordered, no duplicates), Queue (FIFO). Key classes: ArrayList (dynamic array), LinkedList (node-based), HashSet (hash-table-based unique elements)."
+  },
+  {
+    "id": 92,
+    "category": "OOP Concepts",
+    "question": "What is the difference between Array, ArrayList, and List in Java?",
+    "answer": "Array – fixed size; cannot add or remove items after allocation.\nArrayList – dynamic array backed by a resizable array; allows duplicates and random access.\nList – an interface that ArrayList implements; cannot be instantiated directly."
+  },
+  {
+    "id": 93,
+    "category": "OOP Concepts",
+    "question": "What is exception handling in Java?",
+    "answer": "An exception is an event that disrupts the normal flow of a program. Java handles exceptions using try-catch-finally blocks.\n- try: contains the code that may throw an exception.\n- catch: handles the thrown exception.\n- finally: always executes regardless of whether an exception occurred.\nCommon exceptions: NullPointerException, ArrayIndexOutOfBoundsException, FileNotFoundException."
+  },
+  {
+    "id": 94,
+    "category": "OOP Concepts",
+    "question": "What is the difference between StringBuffer and StringBuilder?",
+    "answer": "StringBuffer is mutable, synchronized (thread-safe), and less efficient. StringBuilder is mutable, non-synchronized (not thread-safe), and more efficient. Use StringBuilder in single-threaded environments and StringBuffer in multi-threaded contexts."
+  },
+  {
+    "id": 95,
+    "category": "OOP Concepts",
+    "question": "What is a Marker Interface?",
+    "answer": "A Marker Interface (also called a Tag Interface or Ability Interface) contains no methods or fields. Implementing it gives the class a special ability recognized by the JVM or framework. Examples: Serializable and Cloneable in Java."
+  },
+  {
+    "id": 96,
+    "category": "OOP Concepts",
+    "question": "What is a Wrapper class? What is Autoboxing and Unboxing?",
+    "answer": "Wrapper classes convert Java primitives into objects (e.g., int → Integer, boolean → Boolean). Autoboxing is the automatic conversion from a primitive to its corresponding wrapper class. Unboxing is the reverse — converting a wrapper class back to its primitive type."
+  },
+  {
+    "id": 97,
+    "category": "OOP Concepts",
+    "question": "What is the difference between Comparable and Comparator?",
+    "answer": "Comparable is implemented by the model class itself and overrides compareTo() for natural ordering (typically by a single field). Comparator is an external class or lambda used for multiple custom sort orders. Use Comparable for a single, default sort; use Comparator for flexible, multiple sort strategies."
+  },
+  {
+    "id": 98,
+    "category": "OOP Concepts",
+    "question": "What is a Thread in Java? What are the types?",
+    "answer": "A thread is a lightweight subprocess with its own call stack. In Android:\n1) UI (Main) Thread – where all UI components run; must not be blocked.\n2) Background Thread – runs behind the scenes for network, database, or heavy computation tasks to keep the UI responsive."
+  },
+  {
+    "id": 99,
+    "category": "OOP Concepts",
+    "question": "What is the difference between volatile and synchronized in Java?",
+    "answer": "volatile ensures that a variable's value is always read from main memory (not a thread's cache), making reads and writes atomic for primitives. synchronized controls access so only one thread can execute a block at a time, ensuring atomicity for compound operations. Use volatile for simple flags; use synchronized for critical sections."
+  },
+  {
+    "id": 100,
+    "category": "OOP Concepts",
+    "question": "What is a memory leak in Android and how do you prevent it?",
+    "answer": "A memory leak occurs when an app holds a reference to an object that is no longer needed, preventing garbage collection. Common causes: holding an Activity context in a static variable or long-lived object. Prevention: always use Application context for long-lived objects, use WeakReference where needed, and clear references in onDestroy()."
+  },
+  {
+    "id": 101,
+    "category": "OOP Concepts",
+    "question": "What is the difference between static and final in Java?",
+    "answer": "static – the member belongs to the class, not to any instance; can be accessed by class name directly; its value can be changed after initialization.\nfinal – the value cannot be changed after initialization; a final method cannot be overridden; a final class cannot be subclassed."
+  },
+  {
+    "id": 102,
+    "category": "OOP Concepts",
+    "question": "What is the difference between REST and SOAP?",
+    "answer": "REST: uses XML/JSON/HTML, transfers data via HTTP only, less secure, better performance, less bandwidth.\nSOAP: uses XML only, can use HTTP/SMTP/FTP, more secure, lower performance, more bandwidth. REST can use SOAP principles, but SOAP cannot use REST."
+  },
+  {
+    "id": 103,
+    "category": "RxJava & Dagger-Hilt",
+    "question": "What is Dagger 2?",
+    "answer": "Dagger library was created by developers at Square, way back in 2012. Dagger 2 is a compile-time android dependency injection framework and uses the Java Specification Request (JSR) 330 and uses an annotation processor. 1)@Module : This is used on the class that does the work of constructing objects. 2)@Provides : This is used on the methods inside the Module class that return the object. 3)@Inject: Used to request Dagger to provide the respective Object on Constructor, Fields and Methods. 4)@Component : Acts as a bridge between @Module and @Inject. 5)@Singleton : Only a single instance of the dependency object is created. 6)@Scope: Used to create a custom scope (e.g., @ApplicationScope or @ActivityScope). 7)@Qualifier: Used when multiple objects of the same type are needed with different values. 8)@Binds: Declares abstract methods in modules for interfaces or abstract classes. 9)@BindsInstance: Used for values received at runtime, e.g., val db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, \"database-name\").build()."
+  },
+  {
+    "id": 104,
+    "category": "RxJava & Dagger-Hilt",
+    "question": "How does Dagger work internally?",
+    "answer": "Dagger library contains only annotations and a Dagger Compiler. The compiler does not go inside the APK. During compilation, the Annotation Processor generates boilerplate DI code automatically. The final APK contains both your written code and the code generated by the Annotation Processor combined together."
+  },
+  {
+    "id": 105,
+    "category": "RxJava & Dagger-Hilt",
+    "question": "What is a Module in Dagger?",
+    "answer": "A Module is a class that provides dependencies. Inside this class, we define functions annotated with @Provides. Dagger scans all methods marked with @Provides and uses them to supply the required objects. For example, if a ViewModel needs an HttpClient object, the Module class provides that object."
+  },
+  {
+    "id": 106,
+    "category": "RxJava & Dagger-Hilt",
+    "question": "What is a Component in Dagger?",
+    "answer": "A Component in Dagger acts as a bridge between the Module (which provides dependencies) and the consumer class (which needs those dependencies). It is defined as an interface annotated with @Component."
+  },
+  {
+    "id": 107,
+    "category": "RxJava & Dagger-Hilt",
+    "question": "What is the lifecycle of the Application class in Android?",
+    "answer": "The Application class object is created the moment the app is opened and stays in memory until the app is closed. It lives for the entire duration of the application's lifecycle, which is why it is used as the root component in Dagger/Hilt for app-scoped dependencies."
+  },
+  {
+    "id": 108,
+    "category": "RxJava & Dagger-Hilt",
+    "question": "What is @Qualifier in Dagger and why is it needed?",
+    "answer": "In Dagger, when a Module has two functions that return the same type but with different values, the compiler gets confused about which object to provide to the consumer. @Qualifier resolves this ambiguity. It must be defined in both places: on the @Provides method in the Module and at the injection site where it is consumed."
+  },
+  {
+    "id": 109,
+    "category": "RxJava & Dagger-Hilt",
+    "question": "Can we create a constructor or object of an Activity manually?",
+    "answer": "No. We cannot create a constructor or manually instantiate an Activity because its object is created and managed by the Android system itself, not by the developer."
+  },
+  {
+    "id": 110,
+    "category": "RxJava & Dagger-Hilt",
+    "question": "Can we create a constructor of a ViewModel?",
+    "answer": "Yes. Unlike Activity, ViewModel is not instantiated by the Android system. We control its constructor, which is why constructor injection works for ViewModel. When it has dependencies, we use ViewModelProvider.Factory or Hilt's @HiltViewModel to inject them."
+  },
+  {
+    "id": 111,
+    "category": "RxJava & Dagger-Hilt",
+    "question": "Why can we not use constructor injection in Activity, Fragment, BroadcastReceiver, WorkManager, and Service?",
+    "answer": "These Android framework classes have their objects created and managed by the Android system. We have no control over their constructors or instantiation. Therefore, constructor injection is not possible. Instead, field injection using @Inject is used, which Dagger/Hilt performs after the object is created by the system."
+  },
+  {
+  "id": 112,
+  "category": "Kotlin Basics",
+  "question": "What is the difference between lateinit and lazy in Kotlin?",
+  "answer": "Both are used to delay property initialization in Kotlin.\n\nlateInit:\nUsed when we do not want to initialize a variable at declaration time but will initialize it before use.\n- Can only be used with the var keyword.\n- Can only be used with non-nullable types.\n- Should be used when the variable is mutable and will be initialized later.\n- You must ensure it is initialized before accessing it, otherwise UninitializedPropertyAccessException is thrown.\n\nlazy:\nUsed when object creation is expensive and we want to delay it until it is actually needed.\n- Can only be used with the val keyword.\n- The object is initialized only on the first access; subsequent accesses return the cached result.\n\nExample:\nclass Session {\n    private val mentor: Mentor by lazy { Mentor() }\n}\n\nHere, the Mentor object will not be created when Session is created. It will only be initialized the first time mentor is accessed. This leads to faster Session object creation since the expensive Mentor initialization is deferred."
+  },
+  {
+    "id": 113,
+    "category": "Kotlin Coroutines",
+    "question": "What is a Coroutine in Kotlin?",
+    "answer": "Coroutines are lightweight threads used in Android to simplify code that executes asynchronously. Coroutines help manage long-running tasks.\n\nAdvantages of Coroutines:\n\nExecuted within a thread:\nMultiple coroutines can run inside a single thread.\n\nCoroutines are suspendable:\nWe can execute some instructions, pause a coroutine in the middle of execution, and resume it later. A regular thread cannot do this.\n\nThey can switch their context:\nA coroutine that started in one thread can easily switch to another thread.\n\nNote: In Kotlin, executing async means running a task asynchronously using coroutines, which allows operations to run without blocking the current thread and ensures the application remains responsive."
+  },
+  {
+    "id": 114,
+    "category": "Kotlin Coroutines",
+    "question": "Why do we need Coroutines and why are they lightweight?",
+    "answer": "Traditional threads are managed by the OS, are heavy in terms of memory (MBs per thread), and are expensive for context switching.\n\nCoroutines are managed by the Kotlin runtime, not the OS, so they need only a few KB of memory. This is why they are considered lightweight.\n\nAdditionally, using RxJava requires a lot of effort to use safely, and AsyncTask and threads can easily introduce memory leaks and overhead. Coroutines solve all these problems in a cleaner and more structured way."
+  },
+  {
+    "id": 115,
+    "category": "Kotlin Coroutines",
+    "question": "How many scopes are there in Kotlin Coroutines?",
+    "answer": "There are basically 3 scopes in Kotlin Coroutines:\n\nGlobal Scope:\nCoroutines launched in GlobalScope live as long as the application does. This can lead to memory leak issues and is generally discouraged.\n\nLifecycle Scope:\nSimilar to GlobalScope, but all coroutines launched within an Activity or Fragment are automatically cancelled when that Activity or Fragment is destroyed. This prevents memory leaks.\n\nViewModel Scope:\nSimilar to Lifecycle Scope, but the coroutines live as long as the ViewModel is alive. It is the recommended scope for coroutines that fetch or process data for the UI."
+  },
+  {
+    "id": 116,
+    "category": "Kotlin Coroutines",
+    "question": "What are Dispatchers in Kotlin Coroutines?",
+    "answer": "Dispatchers determine which thread a coroutine runs on. There are 4 types:\n\nMain Dispatcher (Dispatchers.Main):\nRuns the coroutine on the main/UI thread. Used for UI operations since the UI can only be updated from the main thread.\n\nIO Dispatcher (Dispatchers.IO):\nRuns the coroutine on an IO-optimized thread pool. Used for network calls, database reads/writes, and file operations.\n\nDefault Dispatcher (Dispatchers.Default):\nRuns the coroutine on a CPU-optimized thread pool. Used for complex, CPU-intensive work like sorting a list of 10,000 elements, so it does not block the UI thread.\n\nUnconfined Dispatcher (Dispatchers.Unconfined):\nNot confined to any specific thread. It starts in the current thread and can resume in a different thread. Generally not recommended for production use."
+  },
+  {
+    "id": 117,
+    "category": "Kotlin Coroutines",
+    "question": "How can we use the delay function inside the main thread?",
+    "answer": "We can achieve this using runBlocking. Inside a runBlocking block, we can use the delay function and launch multiple coroutine scopes. These scopes execute asynchronously within the blocked thread.\n\nNote: runBlocking is mainly used for testing or bridging blocking and non-blocking code. It should not be used on the main thread in production as it blocks the thread and prevents UI updates."
+  },
+  {
+    "id": 118,
+    "category": "Kotlin Coroutines",
+    "question": "What is the difference between launch and async in Kotlin Coroutines?",
+    "answer": "launch:\nFire and forget. It does not return any result. Used when you want to start a coroutine and do not need its result.\n\nasync:\nPerforms a task and returns a result. It returns an instance of Deferred<T>, and you call .await() on it to get the result when needed.\n\nIn short:\n- Use launch when you do not need a return value.\n- Use async + await when you need to get a result from a coroutine."
+  },
+  {
+    "id": 119,
+    "category": "Kotlin Coroutines",
+    "question": "What is SupervisorScope in Kotlin Coroutines?",
+    "answer": "SupervisorScope is a coroutine builder that creates a new child scope and acts as a supervisor for coroutines launched within it.\n\nUnlike a regular coroutine scope, if a child coroutine fails with an exception, the SupervisorScope does not cancel the remaining child coroutines. Each child is independent.\n\nExample:\nsuspend fun myCoroutine() {\n    supervisorScope {\n        launch {\n            // do some work\n        }\n        launch {\n            // do some other work — runs even if the first launch fails\n        }\n    }\n}"
+  },
+  {
+    "id": 120,
+    "category": "Kotlin Coroutines",
+    "question": "What is the difference between StateFlow and LiveData?",
+    "answer": "Both are observable data holders used in MVVM architecture, but they serve different needs.\n\nLifecycle Awareness:\nLiveData is lifecycle-aware by default.\nStateFlow requires lifecycle handling using repeatOnLifecycle or flowWithLifecycle.\n\nInitial Value:\nStateFlow always requires an initial value at creation.\nLiveData does not require an initial value.\n\nCoroutines and Operators:\nStateFlow supports Flow operators like map, debounce, combine, and filter.\nLiveData has limited transformation support (only map and switchMap).\n\nThreading:\nLiveData uses setValue() on the main thread and postValue() from a background thread.\nStateFlow is coroutine-friendly and thread-safe by design.\n\nJetpack Compose:\nStateFlow integrates naturally with collectAsState() in Compose.\nLiveData works in Compose but requires observeAsState() as a bridge.\n\nConclusion:\nFor modern coroutine-first and Compose-based apps, StateFlow is the better choice.\nFor legacy XML-based projects, LiveData is still perfectly fine."
+  },
+  {
+    "id": 121,
+    "category": "Kotlin Basics",
+    "question": "What are scope functions in Kotlin and what are their types?",
+    "answer": "Scope functions are used to execute a block of code within the context of an object, making the code more concise and readable.\n\nlet (context: it, returns: lambda result):\nFrequently used for null-safety calls using the safe call operator (?.). The block only runs if the value is non-null.\nExample: list.size?.let { ... }\n\napply (context: this, returns: context object):\nUsed to configure or set values on an object. You can set multiple properties without repeating the object reference.\n\nwith (context: this, returns: lambda result):\nRecommended when calling multiple functions on a context object without needing the lambda result as a return value.\n\nrun (context: this, returns: lambda result):\nA combination of let and with. Used for null-safety calls along with other calculations on the object.\n\nalso (context: it, returns: context object):\nUsed when you need to perform additional operations after the object members have been initialized, without changing the object itself."
+  },
+  {
+    "id": 122,
+    "category": "Kotlin Basics",
+    "question": "What is the open keyword in Kotlin?",
+    "answer": "By default, all classes and functions in Kotlin are final, meaning they cannot be inherited or overridden. To allow inheritance or overriding, you must explicitly mark the class or function with the open keyword.\n\nExample:\nopen class Animal {\n    open fun speak() { }\n}\n\nclass Dog : Animal() {\n    override fun speak() { }\n}"
+  },
+  {
+    "id": 123,
+    "category": "Kotlin Basics",
+    "question": "Does Kotlin support primitive data types?",
+    "answer": "No. Kotlin does not have primitive data types like Java. Everything in Kotlin is an object. However, the Kotlin compiler optimizes types like Int, Double, and Boolean to use JVM primitives under the hood wherever possible, so there is no performance difference."
+  },
+  {
+    "id": 124,
+    "category": "Kotlin Basics",
+    "question": "What are higher-order functions in Kotlin?",
+    "answer": "A higher-order function is a function that either takes another function as a parameter, returns a function, or both.\n\nExample:\nfun passMeFunction(abc: () -> Unit) {\n    // executes the passed function\n    abc()\n}\n\nHigher-order functions are the foundation for features like scope functions (let, apply, run), collection operations (map, filter), and coroutine builders (launch, async)."
+  },
+  {
+    "id": 125,
+    "category": "Kotlin Basics",
+    "question": "What are extension functions in Kotlin?",
+    "answer": "Extension functions allow you to add new functions to an existing class without inheriting it or modifying its source code. They are defined outside the class using the ClassName.functionName() syntax.\n\nExample:\nfun String.addExclamation(): String {\n    return this + \"!\"\n}\n\nval result = \"Hello\".addExclamation() // \"Hello!\"\n\nThey are widely used in Android for utility methods on Context, View, and String."
+  },
+  {
+    "id": 126,
+    "category": "Kotlin Basics",
+    "question": "What are visibility modifiers in Kotlin?",
+    "answer": "Visibility modifiers define the scope or accessibility of a class, function, or property.\n\nprivate: Visible only within the class or file where it is declared.\n\nprotected: Visible within the class and its subclasses. Not applicable at the top level.\n\ninternal: Visible everywhere within the same module (e.g., the same Gradle module).\n\npublic: Visible to everyone. This is the default modifier in Kotlin."
+  },
+  {
+    "id": 127,
+    "category": "Kotlin Basics",
+    "question": "What are the types of constructors in Kotlin?",
+    "answer": "Primary Constructor:\nDefined in the class header. It cannot contain any code directly; initialization logic goes in an init{} block.\nExample: class Person(val name: String, val age: Int)\n\nSecondary Constructor:\nDefined inside the class body using the constructor keyword. You must explicitly call the primary constructor from a secondary constructor using this().\n\nExample:\nclass Person(val name: String) {\n    constructor(name: String, age: Int) : this(name) {\n        // additional setup\n    }\n}"
+  },
+  {
+    "id": 128,
+    "category": "Kotlin Basics",
+    "question": "What is an inline function in Kotlin?",
+    "answer": "An inline function instructs the compiler to copy the entire function body to every call site at compile time, instead of making an actual function call at runtime. It is declared using the inline keyword.\n\nAdvantages:\n- Eliminates function call overhead.\n- Faster execution, especially for higher-order functions with lambda parameters.\n\nWhen to use:\n- When the function body is small and called frequently.\n\nWhen NOT to use:\n- When the function body is large and called from many places, as the code will be duplicated at every call site, increasing APK size."
+  },
+  {
+    "id": 129,
+    "category": "Kotlin Basics",
+    "question": "What are lambda expressions in Kotlin?",
+    "answer": "Lambda expressions are anonymous functions that can be stored in variables, passed as arguments to functions, or returned from functions.\n\nSyntax:\nval add: (Int, Int) -> Int = { a, b -> a + b }\nval result = add(9, 10) // result = 19\n\nLambdas are heavily used with higher-order functions like map, filter, forEach, and coroutine builders."
+  },
+  {
+    "id": 130,
+    "category": "Kotlin Basics",
+    "question": "How do you create a Singleton class in Kotlin?",
+    "answer": "In Kotlin, a Singleton is created using the object keyword. The Kotlin compiler ensures only one instance is ever created.\n\nExample:\nobject DatabaseManager {\n    fun getConnection() { }\n}\n\nThis is equivalent to Java's double-checked locking Singleton pattern but is much simpler and thread-safe by default."
+  },
+  {
+    "id": 131,
+    "category": "Kotlin Basics",
+    "question": "What is a suspend function in Kotlin Coroutines?",
+    "answer": "A suspend function is the fundamental building block of coroutines. It is a function that can be started, paused, and resumed without blocking the thread. It is declared using the suspend keyword.\n\nKey points:\n- A suspend function can only be called from another suspend function or from a coroutine scope.\n- It does not block the calling thread; it suspends the coroutine while waiting and releases the thread for other work.\n\nExample:\nsuspend fun fetchData(): String {\n    delay(1000) // suspends, not blocks\n    return \"Data\"\n}"
+  },
+  {
+    "id": 132,
+    "category": "Kotlin Basics",
+    "question": "What is the difference between FlatMap and Map in Kotlin?",
+    "answer": "map: Transforms each element of a list based on a given condition and returns a new list of the same size.\nExample: listOf(1, 2, 3).map { it * 2 } → [2, 4, 6]\n\nflatMap: Transforms each element into a list and then flattens all resulting lists into a single list.\nExample: listOf(listOf(1, 2), listOf(3, 4)).flatMap { it } → [1, 2, 3, 4]\n\nUse map for one-to-one transformations and flatMap when each element maps to multiple elements."
+  },
+  {
+    "id": 133,
+    "category": "Kotlin Basics",
+    "question": "What is the difference between a Thread and a Coroutine?",
+    "answer": "Thread:\n- Managed by the Operating System.\n- Heavy in memory (MBs per thread).\n- Context switching is expensive.\n- Blocking a thread wastes resources.\n\nCoroutine:\n- Managed by the Kotlin runtime.\n- Lightweight (only a few KB of memory).\n- Can be suspended and resumed without blocking the thread.\n- Many coroutines can run on a single thread.\n\nIn short, coroutines achieve concurrency with far less overhead than threads."
+  },
+  {
+    "id": 134,
+    "category": "Kotlin Basics",
+    "question": "What is the Elvis operator in Kotlin?",
+    "answer": "The Elvis operator (?:) is used to provide a default value when a nullable expression evaluates to null. It avoids explicit null checks.\n\nSyntax:\nval result = nullableValue ?: defaultValue\n\nExample:\nvar name: String? = null\nval nameLength = name?.length ?: -1\nprintln(nameLength) // prints -1 since name is null\n\nIf name is not null, it returns name.length. If it is null, it returns -1."
+  },
+  {
+    "id": 135,
+    "category": "Kotlin Basics",
+    "question": "What is the difference between a data class and a regular class in Kotlin?",
+    "answer": "Data class:\n- Designed specifically to hold data.\n- Automatically generates equals(), hashCode(), toString(), copy(), and componentN() functions.\n- Concise and reduces boilerplate code.\n- Declared using the data keyword.\n\nRegular class:\n- Can perform arbitrary operations and business logic.\n- Does not auto-generate equals(), hashCode(), or toString() unless overridden manually.\n\nUse data classes for model/entity objects (e.g., User, Product) and regular classes for classes with behavior and logic (e.g., ViewModel, Repository)."
   }
 ]

@@ -1,16 +1,14 @@
 package com.example.androidinterviewprep.ui.detail
 
 import androidx.compose.animation.*
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.NavigateBefore
-import androidx.compose.material.icons.filled.NavigateNext
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.NavigateBefore
+import androidx.compose.material.icons.automirrored.filled.NavigateNext
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
@@ -18,14 +16,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.androidinterviewprep.data.model.Question
 import com.example.androidinterviewprep.viewmodel.QuestionViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuestionDetailScreen(
     categoryName: String,
@@ -83,21 +79,14 @@ fun QuestionDetailContent(
     onNavigateToNext: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var showAnswer by remember(currentQuestion?.id) { mutableStateOf(false) }
-
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
-                    Text(
-                        text = "Question Detail",
-                        fontWeight = FontWeight.Bold
-                    )
-                },
+                title = { Text(text = "Question Detail", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
                         )
                     }
@@ -110,18 +99,7 @@ fun QuestionDetailContent(
         modifier = modifier
     ) { paddingValues ->
         if (currentQuestion == null) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "Question not found.",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+            EmptyQuestionState(Modifier.padding(paddingValues))
         } else {
             Column(
                 modifier = Modifier
@@ -129,193 +107,240 @@ fun QuestionDetailContent(
                     .padding(paddingValues)
                     .padding(16.dp)
             ) {
-                // Main scrollable content
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    // Category Tag Badge
-                    Surface(
-                        color = MaterialTheme.colorScheme.secondaryContainer,
-                        shape = RoundedCornerShape(8.dp),
-                        modifier = Modifier.padding(bottom = 12.dp)
-                    ) {
-                        Text(
-                            text = categoryName,
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-                        )
-                    }
-
-                    // Question Text Card
-                    Card(
-                        shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant
-                        ),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = currentQuestion.question,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(16.dp)
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Reviewed toggle row
-                    Card(
-                        shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surface
-                        ),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 8.dp)
-                        ) {
-                            Checkbox(
-                                checked = isReviewed,
-                                onCheckedChange = { onToggleReviewed() }
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = "Mark as Reviewed",
-                                style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Show/Hide Answer Button
-                    Button(
-                        onClick = { showAnswer = !showAnswer },
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = if (showAnswer) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary
-                        ),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Icon(
-                            imageVector = if (showAnswer) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                            contentDescription = null
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = if (showAnswer) "Hide Answer" else "Show Answer",
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Answer Card with AnimatedVisibility
-                    AnimatedVisibility(
-                        visible = showAnswer,
-                        enter = expandVertically() + fadeIn(),
-                        exit = shrinkVertically() + fadeOut()
-                    ) {
-                        Card(
-                            shape = RoundedCornerShape(16.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surface
-                            ),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 16.dp)
-                        ) {
-                            Column(modifier = Modifier.padding(16.dp)) {
-                                Text(
-                                    text = "Answer",
-                                    style = MaterialTheme.typography.titleSmall,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.padding(bottom = 8.dp)
-                                )
-                                Text(
-                                    text = currentQuestion.answer,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    lineHeight = 24.sp
-                                )
-                            }
-                        }
-                    }
-                }
+                QuestionMainContent(
+                    modifier = Modifier.weight(1f),
+                    categoryName = categoryName,
+                    questionText = currentQuestion.question,
+                    isReviewed = isReviewed,
+                    onToggleReviewed = onToggleReviewed,
+                    answerText = currentQuestion.answer,
+                    questionId = currentQuestion.id
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Bottom Prev/Next Navigation
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    OutlinedButton(
-                        onClick = onNavigateToPrevious,
-                        enabled = hasPrevious,
-                        shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(50.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.NavigateBefore,
-                            contentDescription = "Previous Question"
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text("Previous")
-                    }
+                DetailNavigationRow(
+                    hasPrevious = hasPrevious,
+                    hasNext = hasNext,
+                    onNavigateToPrevious = onNavigateToPrevious,
+                    onNavigateToNext = onNavigateToNext
+                )
+            }
+        }
+    }
+}
 
-                    Spacer(modifier = Modifier.width(16.dp))
+@Composable
+private fun EmptyQuestionState(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "Question not found.",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
 
-                    Button(
-                        onClick = onNavigateToNext,
-                        enabled = hasNext,
-                        shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(50.dp)
-                    ) {
-                        Text("Next")
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Icon(
-                            imageVector = Icons.Default.NavigateNext,
-                            contentDescription = "Next Question"
-                        )
-                    }
+@Composable
+private fun QuestionMainContent(
+    categoryName: String,
+    questionText: String,
+    isReviewed: Boolean,
+    onToggleReviewed: () -> Unit,
+    answerText: String,
+    questionId: Int,
+    modifier: Modifier = Modifier
+) {
+    var showAnswer by remember(questionId) { mutableStateOf(false) }
+
+    Column(
+        modifier = modifier.verticalScroll(rememberScrollState())
+    ) {
+        // Category Tag Badge
+        Surface(
+            color = MaterialTheme.colorScheme.secondaryContainer,
+            shape = RoundedCornerShape(8.dp),
+            modifier = Modifier.padding(bottom = 12.dp)
+        ) {
+            Text(
+                text = categoryName,
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+            )
+        }
+
+        // Question Text Card
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant
+            ),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = questionText,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Reviewed toggle row
+        Card(
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            ) {
+                Checkbox(
+                    checked = isReviewed,
+                    onCheckedChange = { onToggleReviewed() }
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Mark as Reviewed",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Show/Hide Answer Button
+        Button(
+            onClick = { showAnswer = !showAnswer },
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = if (showAnswer) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary
+            ),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Icon(
+                imageVector = if (showAnswer) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                contentDescription = null
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = if (showAnswer) "Hide Answer" else "Show Answer",
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Answer Card with AnimatedVisibility
+        AnimatedVisibility(
+            visible = showAnswer,
+            enter = expandVertically() + fadeIn(),
+            exit = shrinkVertically() + fadeOut()
+        ) {
+            Card(
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = "Answer",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    Text(
+                        text = answerText,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        lineHeight = 24.sp
+                    )
                 }
             }
         }
     }
 }
 
+@Composable
+private fun DetailNavigationRow(
+    hasPrevious: Boolean,
+    hasNext: Boolean,
+    onNavigateToPrevious: () -> Unit,
+    onNavigateToNext: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        OutlinedButton(
+            onClick = onNavigateToPrevious,
+            enabled = hasPrevious,
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier
+                .weight(1f)
+                .height(50.dp)
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.NavigateBefore,
+                contentDescription = "Previous Question"
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Text("Previous")
+        }
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Button(
+            onClick = onNavigateToNext,
+            enabled = hasNext,
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier
+                .weight(1f)
+                .height(50.dp)
+        ) {
+            Text("Next")
+            Spacer(modifier = Modifier.width(4.dp))
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.NavigateNext,
+                contentDescription = "Next Question"
+            )
+        }
+    }
+}
+
+private const val PREVIEW_CATEGORY = "Android Basics"
+
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewQuestionDetailContent() {
     val mockQuestion = Question(
         id = 1,
-        category = "Android Basics",
+        category = PREVIEW_CATEGORY,
         question = "What is the life cycle of an activity in Android?",
-        answer = "The lifecycle of an activity includes onCreate(), onStart(), onResume(), onPause(), onStop(), onDestroy(), and onRestart(). These methods allow you to manage the transitions between different states of the activity."
+        answer = "The lifecycle of an activity includes onCreate(), onStart(), onResume(), onPause(), onStop(), onDestroy(), and onRestart()."
     )
     MaterialTheme {
         Surface {
             QuestionDetailContent(
-                categoryName = "Android Basics",
+                categoryName = PREVIEW_CATEGORY,
                 currentQuestion = mockQuestion,
                 isReviewed = false,
                 hasPrevious = true,
@@ -335,7 +360,7 @@ fun PreviewQuestionDetailNotFound() {
     MaterialTheme {
         Surface {
             QuestionDetailContent(
-                categoryName = "Android Basics",
+                categoryName = PREVIEW_CATEGORY,
                 currentQuestion = null,
                 isReviewed = false,
                 hasPrevious = false,

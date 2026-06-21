@@ -21,14 +21,16 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.androidinterviewprep.data.model.Question
 import com.example.androidinterviewprep.viewmodel.QuestionViewModel
 import com.example.androidinterviewprep.viewmodel.UiState
-
+import com.example.androidinterviewprep.R
 @Composable
 fun HomeScreen(
     viewModel: QuestionViewModel,
@@ -48,7 +50,7 @@ fun HomeScreen(
                     Text(
                         text = "Android Interview Prep",
                         fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.titleLarge
+                         style = MaterialTheme.typography.titleLarge
                     )
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -342,6 +344,7 @@ private fun getCategoryIcon(categoryName: String): ImageVector {
         "unit testing" -> Icons.Default.FactCheck
         "rxjava & dagger-hilt" -> Icons.Default.Bolt
         "design patterns" -> Icons.Default.Schema
+        "kotlin basics" -> Icons.Default.RocketLaunch
         else -> Icons.Default.Book
     }
 }
