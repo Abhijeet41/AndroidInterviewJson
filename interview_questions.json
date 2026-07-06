@@ -846,7 +846,7 @@
     "answer": "In an inline function, all lambda parameters are inlined by default. noinline is used to exclude a specific lambda parameter from being inlined.\n\nExample:\ninline fun process(\n    action1: () -> Unit,\n    noinline action2: () -> Unit\n) {\n    action1()  // inlined\n    action2()  // not inlined\n}\n\nWhy use noinline?\nBecause an inlined lambda cannot be stored in a variable, passed to another function, or returned from a function. Use noinline when you need to:\n- Store the lambda in a variable.\n- Pass it to another non-inline function.\n- Return it from a function.\n\nExample:\ninline fun saveLambda(noinline action: () -> Unit) {\n    val stored = action  // only possible because of noinline\n    stored()\n}\n\nWithout noinline, storing or passing the lambda would cause a compilation error."
   },
   {
-  "id": "kt_coroutine_thread_vs_coroutine",
+  "id": 142,
   "category": "Kotlin Coroutines",
   "question": "What is the difference between a Thread and a Coroutine in Kotlin?",
   "answer": "A Thread is an OS-level unit of execution — heavyweight, expensive to create, and managed by the operating system. A Coroutine is a lightweight, suspendable unit of execution managed by the Kotlin runtime, not the OS. Multiple coroutines can run on a single thread (cooperative multitasking) via suspension, whereas threads run in parallel and are switched by the OS scheduler. Coroutines avoid the memory and context-switching overhead of threads, use structured concurrency (CoroutineScope, Job), and support cancellation and exception propagation naturally. In practice, thousands of coroutines can run on a small thread pool (e.g. Dispatchers.IO), whereas creating thousands of raw Threads would exhaust system resources."
