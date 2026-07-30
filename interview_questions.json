@@ -850,5 +850,65 @@
    "category": "Kotlin Coroutines",
    "question": "What is the difference between a Thread and a Coroutine in Kotlin?",
    "answer": "A Thread is an OS-level unit of execution — heavyweight, expensive to create, and managed by the operating system. A Coroutine is a lightweight, suspendable unit of execution managed by the Kotlin runtime, not the OS. Multiple coroutines can run on a single thread (cooperative multitasking) via suspension, whereas threads run in parallel and are switched by the OS scheduler. Coroutines avoid the memory and context-switching overhead of threads, use structured concurrency (CoroutineScope, Job), and support cancellation and exception propagation naturally. In practice, thousands of coroutines can run on a small thread pool (e.g. Dispatchers.IO), whereas creating thousands of raw Threads would exhaust system resources."
- }
+ },
+  {
+    "id": 143,
+    "category": "Kotlin Flow",
+    "question": "What is Flow API in Kotlin?",
+    "answer": "Flow is an asynchronous data stream that emits values to a collector and completes with or without an exception.\n\nExample:\nAssume a task to download an image that emits the download percentage — 1%, 2%, 3%, and so on. If everything goes well, the flow completes without an exception. In case of a network failure, it completes with an exception.\n\nThree key components of Flow:\n- Flow Builder: builds and emits the data stream.\n- Operator: transforms the emitted data from one format to another.\n- Collector: collects and consumes the emitted items."
+  },
+  {
+    "id": 144,
+    "category": "Kotlin Flow",
+    "question": "What is an Operator in Kotlin Flow?",
+    "answer": "An operator transforms the data emitted by a Flow from one format to another before it reaches the collector.\n\nThink of it as a translator. If a speaker talks in French and the collector only understands English, the operator translates between them.\n\nCommon operators:\n- map: transforms each emitted value.\n- filter: filters values based on a condition.\n- onEach: performs a side effect on each value without changing it.\n- flowOn: changes the dispatcher/thread on which the upstream runs.\n- catch: handles exceptions in the flow.\n- zip: combines two flows into one."
+  },
+  {
+    "id": 145,
+    "category": "Kotlin Flow",
+    "question": "What is a Collector in Kotlin Flow?",
+    "answer": "A Collector is the consumer of a Flow. It collects the items emitted by the Flow Builder after they have been transformed by operators.\n\nExample:\nviewModelScope.launch {\n    myFlow\n        .map { it * 2 }\n        .collect { value ->\n            println(value)\n        }\n}\n\nThe collect{} block is the most common terminal operator and acts as the collector. The flow does not start emitting until a collector begins collecting."
+  },
+  {
+    "id": 146,
+    "category": "Kotlin Flow",
+    "question": "What is the flowOn operator in Kotlin Flow?",
+    "answer": "The flowOn operator controls which thread or dispatcher the upstream flow (the emission and transformation logic) runs on. It does not affect the collector, which runs on the scope's dispatcher.\n\nExample:\nval flow = flow {\n    (0..10).forEach {\n        delay(500)\n        emit(it)\n    }\n}\n.flowOn(Dispatchers.Default)\n\nviewModelScope.launch {\n    flow.collect { value ->\n        // collected on Main thread (viewModelScope default)\n        println(value)\n    }\n}\n\nHere, the emission happens on Dispatchers.Default (background), but collection happens on the main thread."
+  },
+  {
+    "id": 147,
+    "category": "Kotlin Flow",
+    "question": "What are Terminal Operators in Kotlin Flow?",
+    "answer": "A terminal operator is a suspend function that actually starts the flow and triggers the emission of values. Without a terminal operator, the flow does nothing — operators like map and filter only describe transformations but do not run anything.\n\nCommon terminal operators:\n\ncollect{}: Most basic — collects each emitted value one by one.\n\ntoList() / toSet(): Collects all emitted values into a List or Set.\n\nfirst() / firstOrNull(): Gets the first emitted value and cancels the flow.\n\nsingle() / singleOrNull(): Expects exactly one value to be emitted.\n\nreduce{}: Accumulates all emitted values into a single result.\n\nExample:\nval sum = (1..5).asFlow().reduce { a, b -> a + b } // result: 15"
+  },
+  {
+    "id": 148,
+    "category": "Kotlin Flow",
+    "question": "What is the difference between Cold Flow and Hot Flow?",
+    "answer": "Cold Flow:\n- Emits data only when there is an active collector.\n- Does not store data.\n- Each collector gets its own independent stream starting from the beginning.\n- Analogy: Netflix — the movie starts from the beginning every time you press Play.\n\nHot Flow:\n- Emits data regardless of whether there is a collector.\n- Can store the latest value.\n- Multiple collectors share the same stream and receive values from the point they start collecting.\n- Analogy: Live cricket on JioHotstar — the scoreboard is always running. Whenever you tune in, you see the current score, not the score from the beginning of the match.\n\nExamples of Hot Flows in Kotlin: StateFlow and SharedFlow."
+  },
+  {
+    "id": 149,
+    "category": "Kotlin Flow",
+    "question": "What is the difference between StateFlow and SharedFlow?",
+    "answer": "StateFlow:\n- Requires an initial value and emits it immediately when a collector starts.\n- Always holds and replays the latest value to new collectors.\n- Best used for UI state that always has a current value.\n- Analogy: A cricket scoreboard — always showing the latest score whenever you look.\n\nSharedFlow:\n- Does not require an initial value and emits nothing by default.\n- Replay is configurable (default is 0, meaning new collectors get no past values).\n- Best used for one-time events like navigation, toasts, or messages.\n- Analogy: A group chat — when a message is sent, all online members receive it. New members do not get old messages unless replay is configured.\n\nIn short:\n- Use StateFlow for state (latest value always needed).\n- Use SharedFlow for events (fire-and-forget, one-time actions)."
+  },
+  {
+    "id": 150,
+    "category": "Kotlin Flow",
+    "question": "What is the zip operator in Kotlin Flow?",
+    "answer": "The zip operator combines the emissions of two Flow collections together via a specified function and emits a single item for each combined pair.\n\nKey advantage: Both flows run in parallel, and the result is delivered in a single callback only when both flows have emitted their corresponding values.\n\nExample:\nfun startLongRunningTask() {\n    viewModelScope.launch {\n        doLongRunningTaskOne()\n            .zip(doLongRunningTaskTwo()) { resultOne, resultTwo ->\n                return@zip resultOne + resultTwo\n            }\n            .flowOn(Dispatchers.Default)\n            .catch { e ->\n                // handle exception\n            }\n            .collect {\n                // combined result\n            }\n    }\n}\n\nUse zip when you need to run two tasks in parallel and combine their results once both complete."
+  },
+  {
+    "id": 151,
+    "category": "Kotlin Flow",
+    "question": "How do you handle exceptions in Kotlin Flow?",
+    "answer": "In Kotlin Flow, exceptions can be caught using the catch operator. It intercepts any exception thrown upstream (in the flow builder or operators) and lets you handle it gracefully without crashing.\n\nExample:\n(1..5).asFlow()\n    .map {\n        check(it != 3) { \"Error at value $it\" } // throws exception when value is 3\n        it * it\n    }\n    .onCompletion {\n        println(\"Flow completed\")\n    }\n    .catch { e ->\n        println(\"Caught exception: $e\")\n    }\n    .collect {\n        println(it)\n    }\n\nNote: The catch operator only catches exceptions from upstream. Exceptions thrown inside the collect block are not caught by catch and must be handled separately with a try-catch."
+  },
+  {
+    "id": 152,
+    "category": "Kotlin Flow",
+    "question": "What is the difference between flatMapConcat and zip operator in Kotlin Flow?",
+    "answer": "flatMapConcat:\nExecutes flows sequentially — one after another. The second flow starts only after the first one completes.\nUse when the second task depends on the result of the first, or when order matters.\nAnalogy: Calling API 2 only after API 1 finishes.\n\nzip:\nExecutes both flows in parallel. It combines one emission from each flow into a pair using a transform function.\nUse when both tasks are independent and you want to save time by running them simultaneously.\nAnalogy: Calling API 1 and API 2 at the same time and combining results when both respond.\n\nIn short:\n- flatMapConcat = series (sequential).\n- zip = parallel (concurrent)."
+  }
 ]
