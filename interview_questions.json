@@ -910,5 +910,143 @@
     "category": "Kotlin Flow",
     "question": "What is the difference between flatMapConcat and zip operator in Kotlin Flow?",
     "answer": "flatMapConcat:\nExecutes flows sequentially — one after another. The second flow starts only after the first one completes.\nUse when the second task depends on the result of the first, or when order matters.\nAnalogy: Calling API 2 only after API 1 finishes.\n\nzip:\nExecutes both flows in parallel. It combines one emission from each flow into a pair using a transform function.\nUse when both tasks are independent and you want to save time by running them simultaneously.\nAnalogy: Calling API 1 and API 2 at the same time and combining results when both respond.\n\nIn short:\n- flatMapConcat = series (sequential).\n- zip = parallel (concurrent)."
+  },
+  {
+    "id": 153,
+    "category": "Kotlin Basics",
+    "question": "What are the advantages and disadvantages of Kotlin over Java?",
+    "answer": "Advantages:\n\nReadability: Kotlin has more readable and concise code compared to Java, making it easier to understand and maintain.\n\nNull Safety: Kotlin eliminates NullPointerException (the billion-dollar mistake) at compile time using nullable types and safe call operators.\n\nInteroperability: Kotlin is fully interoperable with Java. You can use Java libraries and Java code directly in a Kotlin project.\n\nImmutability: Kotlin encourages immutability using val (immutable) and var (mutable), making it clear which values can be reassigned.\n\nDisadvantages:\nSlower compilation speed compared to Java in some cases.\nSmaller community and fewer resources compared to Java.\nSteeper learning curve for developers coming from Java due to new concepts like coroutines, extension functions, and scope functions."
+  },
+  {
+    "id": 154,
+    "category": "Kotlin Basics",
+    "question": "How do you initialize an array in Kotlin with values?",
+    "answer": "In Java, an array is initialized like this:\nint numbers[] = new int[]{10, 20, 30, 40, 50};\n\nIn Kotlin, the equivalent is:\nval numbers: IntArray = intArrayOf(10, 20, 30, 40, 50)\n\nFor a generic array of objects:\nval names: Array<String> = arrayOf(\"Alice\", \"Bob\", \"Charlie\")\n\nKotlin provides specific array types for primitives (IntArray, DoubleArray, BooleanArray, etc.) to avoid boxing overhead."
+  },
+  {
+    "id": 155,
+    "category": "Kotlin Basics",
+    "question": "What is the difference between var and val in Kotlin?",
+    "answer": "var (mutable variable):\nCan be reassigned multiple times after initialization. It is equivalent to a regular variable in Java.\nExample: var name = \"Alice\"\nname = \"Bob\" // allowed\n\nval (immutable variable):\nCan only be assigned once. It is equivalent to a final variable in Java. After initialization, its value cannot be changed.\nExample: val name = \"Alice\"\nname = \"Bob\" // compile error\n\nBest practice: Always prefer val over var. Only use var when you genuinely need to reassign the variable."
+  },
+  {
+    "id": 156,
+    "category": "Kotlin Basics",
+    "question": "What are the advantages of when over switch in Kotlin?",
+    "answer": "In Java we use switch, but Kotlin replaces it with when, which is more concise, readable, and powerful.\n\nAdvantages of when:\n- Can match multiple values in one branch using a comma.\n- Can be used as an expression (returns a value).\n- Supports arbitrary conditions, not just constants.\n- No fall-through behavior (no need for break statements).\n\nExample with value:\nwhen(number) {\n    1 -> println(\"One\")\n    2, 3 -> println(\"Two or Three\")\n    4 -> println(\"Four\")\n    else -> println(\"Not between 1 and 4\")\n}\n\nExample with conditions:\nwhen {\n    number < 1 -> print(\"Less than 1\")\n    number > 1 -> print(\"Greater than 1\")\n}"
+  },
+  {
+    "id": 157,
+    "category": "Kotlin Basics",
+    "question": "What is null safety in Kotlin?",
+    "answer": "Null safety is one of Kotlin's biggest advantages over Java. In Java, accessing a null variable causes a NullPointerException at runtime. Kotlin prevents this at compile time.\n\nBy default, variables in Kotlin are non-nullable:\nvar name: String = \"MindOrks\"\nname = null // compile error\n\nTo allow null, declare the variable as nullable using ?:\nvar name: String? = \"MindOrks\"\nname = null // allowed\nprintln(name?.length) // safe call — returns null instead of throwing exception\n\nKotlin provides several tools for null safety:\n- Safe call operator (?.) — returns null if the variable is null.\n- Elvis operator (?:) — provides a default value when null.\n- Not-null assertion (!!) — throws NullPointerException if null (use with caution)."
+  },
+  {
+    "id": 158,
+    "category": "Kotlin Basics",
+    "question": "How is it recommended to create constants in Kotlin?",
+    "answer": "There are two ways to create constants in Kotlin:\n\nval — initialized at runtime, can be used inside a class or function:\nval MY_CONSTANT = \"Value\"\n\nconst val — compiled to a true JVM static final constant at compile time, must be at the top level or inside an object/companion object:\nconst val MY_CONSTANT = \"Value\"\n\nBest practice:\nDefine constants at the top level or inside an object, not in a companion object. Behind the scenes, companion objects generate getter/setter methods, making access technically more expensive than a true static field.\n\nobject AppConstants {\n    const val BASE_URL = \"https://api.example.com\"\n    const val TIMEOUT = 30\n}"
+  },
+  {
+    "id": 159,
+    "category": "Kotlin Basics",
+    "question": "What is the difference between safe call (?.) and null check (!!) in Kotlin?",
+    "answer": "Safe call operator (?.):\nChecks if the variable is null before accessing its property or method. If it is null, it returns null instead of throwing an exception.\nExample:\nvar name: String? = \"MindOrks\"\nprintln(name?.length) // 8\nname = null\nprintln(name?.length) // null — no crash\n\nNot-null assertion (!!):\nForces access on the variable. If the variable is null, it throws a KotlinNullPointerException at runtime.\nExample:\nvar name: String? = null\nprintln(name!!.length) // throws KotlinNullPointerException\n\nBest practice: Prefer the safe call operator (?.) over the not-null assertion (!!) to avoid runtime crashes. Only use !! when you are absolutely certain the value is not null."
+  },
+  {
+    "id": 160,
+    "category": "Kotlin Basics",
+    "question": "Does Kotlin have a ternary operator like Java?",
+    "answer": "No, Kotlin does not have a ternary operator (condition ? value1 : value2) like Java.\n\nInstead, Kotlin's if-else is an expression and can return a value directly:\nval result = if (condition) value1 else value2\n\nAlternatively, you can use the Elvis operator (?:) for null checks:\nval nameLength = name?.length ?: -1\n\nThis makes the ternary operator unnecessary in Kotlin since if-else itself serves the same purpose more readably."
+  },
+  {
+    "id": 161,
+    "category": "Kotlin Basics",
+    "question": "What are init blocks in Kotlin?",
+    "answer": "An init block is an initializer block that runs immediately after the primary constructor executes. Since you cannot write logic directly inside a primary constructor in Kotlin, the init block is the place to perform initialization operations.\n\nA class can have one or more init blocks, and they execute in the order they appear in the class body.\n\nExample:\nclass Person(val name: String) {\n    init {\n        println(\"Person created with name: $name\")\n    }\n    init {\n        println(\"Second init block runs after the first\")\n    }\n}\n\nval p = Person(\"Alice\")\n// Output:\n// Person created with name: Alice\n// Second init block runs after the first"
+  },
+  {
+    "id": 162,
+    "category": "Kotlin Basics",
+    "question": "What is forEach in Kotlin and how is it used?",
+    "answer": "forEach is a Kotlin collection function used to iterate over each element in a list or collection, similar to a for-each loop in Java.\n\nExample:\nval listOfSites = listOf(\"mindorks.com\", \"blog.mindorks.com\", \"afteracademy.com\")\nlistOfSites.forEach {\n    println(it)\n}\n\nYou can also use a named parameter instead of it:\nlistOfSites.forEach { site ->\n    println(site)\n}\n\nforEach can be used on any Iterable in Kotlin including List, Set, Map entries, and ranges."
+  },
+  {
+    "id": 163,
+    "category": "Kotlin Basics",
+    "question": "What is the difference between List and Array in Kotlin?",
+    "answer": "Array:\n- Fixed in size once created; cannot add or remove elements.\n- Use when the size is known and will not change.\n- Lower-level, maps closely to Java arrays.\nExample: val numbers = intArrayOf(1, 2, 3)\n\nList:\n- Immutable by default (listOf). Use MutableList (mutableListOf) for a resizable list.\n- Higher-level collection with more utility functions (filter, map, sorted, etc.).\n- Use when the size may vary or when you need collection operations.\nExample: val names = mutableListOf(\"Alice\", \"Bob\")\nnames.add(\"Charlie\")\n\nBest practice: Prefer List over Array in most cases. Use Array only when interoperating with Java APIs or when performance is critical."
+  },
+  {
+    "id": 164,
+    "category": "Kotlin Basics",
+    "question": "What is a sealed class in Kotlin?",
+    "answer": "A sealed class is an abstract class where all subclasses must be defined in the same file (or same module in Kotlin 1.5+). No other module or file can extend it, making all possible subclasses known at compile time.\n\nThis makes sealed classes ideal for representing restricted class hierarchies, such as UI states or results.\n\nExample:\nsealed class Result\ndata class Success(val data: String) : Result()\ndata class Error(val message: String) : Result()\nobject Loading : Result()\n\nwhen(result) {\n    is Success -> println(result.data)\n    is Error -> println(result.message)\n    is Loading -> println(\"Loading...\")\n    // No else needed — all subclasses are known\n}\n\nKey advantage: The compiler knows all subclasses, so when used in a when expression, no else branch is needed."
+  },
+  {
+    "id": 165,
+    "category": "Kotlin Basics",
+    "question": "What are @JvmStatic, @JvmOverloads, and @JvmField annotations in Kotlin?",
+    "answer": "@JvmStatic:\nTells the compiler to generate a true static method for a companion object function, making it accessible from Java code as a static method.\nExample:\nclass Utils {\n    companion object {\n        @JvmStatic\n        fun getAddress(): String = \"MindOrks\"\n    }\n}\n// In Java: Utils.getAddress() — works as a static call\n\n@JvmOverloads:\nGenerates overloaded versions of a Kotlin function that has default parameter values, so Java callers can call it without providing all arguments.\nExample:\ndata class Event(val name: String, val date: Date = Date())\n// Java can now call: new Event(\"MindOrks\") without the date parameter\n\n@JvmField:\nExposes a Kotlin property as a plain Java field, removing the auto-generated getter and setter. Used when Java code needs direct field access without calling get/set methods."
+  },
+  {
+    "id": 166,
+    "category": "Kotlin Basics",
+    "question": "What is a Guideline in ConstraintLayout?",
+    "answer": "A Guideline is an invisible helper view in ConstraintLayout used to align other views relative to it. It has no visual presence but provides a reference line for positioning.\n\nTypes:\n- Vertical Guideline: has width 0 and height equal to the parent's height. Other views are constrained to its left or right.\n- Horizontal Guideline: has height 0 and width equal to the parent's width. Other views are constrained to its top or bottom.\n\nGuidelines can be positioned using:\n- layout_constraintGuide_begin — distance from the start/top.\n- layout_constraintGuide_end — distance from the end/bottom.\n- layout_constraintGuide_percent — percentage of the parent dimension (e.g., 0.5 for center)."
+  },
+  {
+    "id": 167,
+    "category": "Kotlin Basics",
+    "question": "What is a Group in ConstraintLayout?",
+    "answer": "A Group is a helper view in ConstraintLayout that controls the visibility of a set of referenced widgets together. Instead of toggling visibility on each view individually, you reference them all in a Group and change visibility once.\n\nExample:\n<androidx.constraintlayout.widget.Group\n    android:id=\"@+id/group\"\n    android:visibility=\"visible\"\n    app:constraint_referenced_ids=\"button1, button2, textView\" />\n\n// In code:\nbinding.group.visibility = View.GONE // hides all referenced views at once\n\nThis is especially useful for showing or hiding a set of related views based on a condition."
+  },
+  {
+    "id": 168,
+    "category": "Kotlin Basics",
+    "question": "What is a Barrier in ConstraintLayout?",
+    "answer": "A Barrier is a virtual guideline in ConstraintLayout that is dynamically positioned based on the most extreme edge of multiple referenced views.\n\nInstead of constraining to a single view (which breaks if that view changes size), a Barrier automatically adjusts based on whichever referenced view extends the furthest in the specified direction.\n\nExample use case: You have two TextViews of varying lengths side by side. You want a third view to always appear to the right of whichever TextView is widest. A Barrier with direction end referencing both TextViews ensures this automatically.\n\nDirections: start, end, top, bottom."
+  },
+  {
+    "id": 169,
+    "category": "Kotlin Basics",
+    "question": "What is the difference between const and val in Kotlin?",
+    "answer": "val:\n- Initialized at runtime (can be assigned from a function call or expression).\n- Can be used inside a class, function, or at the top level.\n- Generates a getter method under the hood.\n\nconst val:\n- Compiled as a true compile-time constant (inlined at every usage point).\n- Can only be used at the top level or inside an object or companion object.\n- Can only hold primitive types or String.\n- Does not generate a getter method — direct field access.\n\nExample:\nval runtimeValue = getValueFromDb() // allowed\nconst val COMPILE_TIME = \"Hello\" // must be a literal\n\nBest practice: Use const val for truly constant values like API keys, URLs, and string tags to get the performance benefit of compile-time inlining."
+  },
+  {
+    "id": 170,
+    "category": "Kotlin Basics",
+    "question": "How does ViewModel work internally in Android?",
+    "answer": "When an Activity or Fragment is destroyed and recreated (e.g., on rotation), all instance variables are lost. ViewModel survives this because its lifecycle is managed outside the Activity/Fragment.\n\nViewModel works in 3 steps:\n\nStorage:\nEvery Activity and Fragment implements ViewModelStoreOwner. This owner holds a ViewModelStore, which is a HashMap mapping keys to ViewModel instances.\n\nSurvival:\nWhen a configuration change occurs, Android calls onRetainNonConfigurationInstance() internally before destroying the Activity. This preserves the ViewModelStore. When the new Activity instance is created, it retrieves the exact same store.\n\nRetrieval:\nWhen you call ViewModelProvider to request a ViewModel, it checks the ViewModelStore. If the ViewModel already exists, it returns the same instance. If not, it creates a new one via the Factory.\n\nDestruction:\nThe ViewModel is only cleared (onCleared() called) when the Activity truly finishes — such as the user pressing Back — not on rotation.\n\nCoroutines:\nviewModelScope is a CoroutineScope with SupervisorJob + Dispatchers.Main. It is automatically cancelled inside onCleared(), so no manual cleanup is needed."
+  },
+  {
+    "id": 171,
+    "category": "Kotlin Basics",
+    "question": "How does Glide work internally in Android?",
+    "answer": "Glide is an image loading library. Internally it works in 4 steps:\n\nRequest:\nWhen you call Glide.with(context).load(url).into(imageView), Glide builds a Request object and attaches it to the ImageView's tag.\n\nCache Check:\nBefore hitting the network, Glide checks 4 cache layers in order:\n- Active Resources (currently displayed bitmaps).\n- Memory Cache (LRU cache of recently used bitmaps).\n- Resource Disk Cache (transformed/downsampled images).\n- Data Disk Cache (original raw downloaded data).\nIf found in any layer, it loads instantly.\n\nNetwork and Decode:\nIf not cached, Glide fetches the image from the network via OkHttp or HttpUrlConnection. It then downsamples the bitmap to exactly match the ImageView's dimensions — not the original image size. This prevents OutOfMemoryError.\n\nDisplay and Cache:\nThe decoded bitmap is shown in the ImageView and stored in both Memory Cache and Disk Cache for future use.\n\nLifecycle awareness:\nGlide attaches a hidden Fragment to the Activity or Fragment to observe the lifecycle. When the Activity is destroyed, Glide automatically cancels all pending requests, preventing memory leaks."
+  },
+  {
+    "id": 172,
+    "category": "Kotlin Basics",
+    "question": "Why does Glide not throw OutOfMemoryError when loading heavy images, and how does LruCache work?",
+    "answer": "Glide avoids OutOfMemoryError by downsampling images before loading them into memory. It first calculates the exact size of the target ImageView, then decodes the image at that size only. For example, a 4K image shown in a 200x200 ImageView is decoded as 200x200 — not at full resolution.\n\nLruCache (Least Recently Used Cache):\nGlide uses LruCache for its memory cache. LruCache internally uses two data structures:\n- HashMap: for O(1) key-value lookup.\n- Doubly Linked List: where each node has a reference to the previous and next node.\n\nHow it works:\n- Newly accessed or added items are moved to the tail (most recently used end).\n- When the cache is full, the item at the head (least recently used) is automatically evicted.\n- This ensures frequently accessed images stay in memory while stale ones are removed.\n\nSolution for slow image loading:\n- Cancel unwanted requests: when a user scrolls past images quickly, Glide cancels loading requests for off-screen images and only loads what is currently visible.\n- Caching: images already loaded are served from memory or disk cache instantly without a network call."
+  },
+  {
+    "id": 173,
+    "category": "Kotlin Basics",
+    "question": "How does LiveData work internally in Android?",
+    "answer": "LiveData works in 3 steps internally:\n\nWrapping:\nEvery observer registered via observe() is wrapped in a LifecycleBoundObserver. This wrapper listens to the lifecycle owner and marks itself as active only when the state is STARTED or RESUMED. Inactive observers do not receive updates.\n\nVersion System:\nLiveData maintains an internal version counter that increments on every setValue() or postValue() call. Each observer tracks the last version it saw. When an observer becomes active again (e.g., after returning from background), it compares its last seen version with LiveData's current version. If it missed an update, it receives the latest value immediately.\n\nAuto Cleanup:\nWhen the lifecycle hits the DESTROYED state, the LifecycleBoundObserver automatically removes itself from LiveData's observer map, preventing memory leaks.\n\nsetValue vs postValue:\n- setValue() must be called on the main thread. It directly updates the value and notifies observers synchronously.\n- postValue() can be called from a background thread. It posts a runnable to the main thread that calls setValue() internally.\n\nobserve vs observeForever:\n- observe() is lifecycle-aware and auto-removes the observer on DESTROYED.\n- observeForever() has no lifecycle awareness and must be manually removed with removeObserver() to avoid leaks."
+  },
+  {
+    "id": 174,
+    "category": "Kotlin Basics",
+    "question": "Why does an Android app lag?",
+    "answer": "Android updates its UI every 16ms to maintain 60 FPS (1000ms / 60 = ~16ms per frame).\n\nAn app lags when it cannot render a frame within this 16ms window. Two main causes:\n\nMain thread overload:\nIf any method or task on the main/UI thread takes more than 16ms to execute, the app skips that frame, causing visible lag or jank. This is why network calls, database queries, and heavy computations must always be moved to a background thread.\n\nGarbage Collection (GC) pauses:\nWhen the GC runs to reclaim unused memory, it can temporarily pause the app. If the pause exceeds 16ms, frames are skipped and the UI appears to stutter.\n\nOther common causes:\n- Overdraw — drawing the same pixel multiple times in one frame.\n- Complex view hierarchies causing slow measure and layout passes.\n- Memory leaks gradually consuming available heap, triggering more frequent GC runs.\n- Unoptimized RecyclerView — not using DiffUtil or ViewHolder pattern correctly."
+  },
+  {
+    "id": 175,
+    "category": "Kotlin Basics",
+    "question": "What is a SAM Interface (Functional Interface) in Kotlin?",
+    "answer": "A SAM (Single Abstract Method) interface, also called a Functional Interface, is an interface that contains exactly one abstract method.\n\nIn Kotlin, it is declared using the fun interface keyword. SAM conversion allows you to pass a concise lambda expression instead of writing a verbose anonymous object.\n\nExample:\nfun interface OnClickAction {\n    fun onClick()\n}\n\n// Without SAM (verbose anonymous object):\nval action = object : OnClickAction {\n    override fun onClick() {\n        println(\"Clicked\")\n    }\n}\n\n// With SAM conversion (concise lambda):\nval action = OnClickAction { println(\"Clicked\") }\n\nKotlin also supports SAM conversion for Java interfaces like Runnable and OnClickListener, which is why you can write:\nbutton.setOnClickListener { view -> println(\"Button clicked\") }\ninstead of creating an anonymous OnClickListener object."
   }
 ]
