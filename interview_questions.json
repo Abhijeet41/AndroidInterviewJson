@@ -339,7 +339,7 @@
     "id": 57,
     "category": "Services & Background",
     "question": "What is Retrofit?",
-    "answer": "Retrofit is a type-safe HTTP client for Android developed by Square. It turns a REST API into a Java/Kotlin interface and supports both synchronous and asynchronous requests with automatic JSON parsing via converters like Gson or Moshi."
+    "answer": "Retrofit is a networking library created by squre. Internally it uses okhttp. It support many threading framework earlierit was threadpool then shifted to rx-java and currently now uses coroutine.Most important is it Reduces BoilerPlate code. when you use okhhtp you get response in string JSON response, so retrofit provide parser factory using this we can convert JSON, XML or anything into a data class object."
   },
   {
     "id": 58,
