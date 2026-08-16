@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.animation.*
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -17,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -74,7 +74,7 @@ fun MainAppContent() {
     
     val showBottomBar = currentRoute in bottomNavigationItems.map { it.route }
     val snackbarHostState = remember { SnackbarHostState() }
-    val dataSource by viewModel.dataSource.collectAsState()
+    val dataSource by viewModel.dataSource.collectAsStateWithLifecycle()
 
     // Notify the user if they are using offline cached data or asset fallback
     LaunchedEffect(dataSource) {

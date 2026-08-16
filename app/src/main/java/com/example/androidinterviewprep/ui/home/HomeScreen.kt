@@ -27,6 +27,7 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.androidinterviewprep.data.model.Question
 import com.example.androidinterviewprep.viewmodel.QuestionViewModel
 import com.example.androidinterviewprep.viewmodel.UiState
@@ -37,9 +38,9 @@ fun HomeScreen(
     onCategoryClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-    val questions by viewModel.questions.collectAsState()
-    val reviewedIds by viewModel.reviewedQuestionIds.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val questions by viewModel.questions.collectAsStateWithLifecycle()
+    val reviewedIds by viewModel.reviewedQuestionIds.collectAsStateWithLifecycle()
     
     val isRefreshing = uiState is UiState.Loading && questions.isNotEmpty()
 
@@ -53,8 +54,12 @@ fun HomeScreen(
                          style = MaterialTheme.typography.titleLarge
                     )
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    scrolledContainerColor = Color.Unspecified,
+                    navigationIconContentColor = Color.Unspecified,
+                    titleContentColor = Color.Unspecified,
+                    actionIconContentColor = Color.Unspecified
                 )
             )
         },
@@ -345,6 +350,7 @@ private fun getCategoryIcon(categoryName: String): ImageVector {
         "rxjava & dagger-hilt" -> Icons.Default.Bolt
         "design patterns" -> Icons.Default.Schema
         "kotlin basics" -> Icons.Default.RocketLaunch
+        "Kotlin Flow" -> Icons.Default.Water
         else -> Icons.Default.Book
     }
 }

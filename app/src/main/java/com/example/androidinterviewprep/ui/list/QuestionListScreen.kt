@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.androidinterviewprep.data.model.Question
 import com.example.androidinterviewprep.viewmodel.QuestionViewModel
 
@@ -33,8 +34,8 @@ fun QuestionListScreen(
     onQuestionClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val reviewedIds by viewModel.reviewedQuestionIds.collectAsState()
-    val questions = remember(categoryName, viewModel.questions.collectAsState().value) {
+    val reviewedIds by viewModel.reviewedQuestionIds.collectAsStateWithLifecycle()
+    val questions = remember(categoryName, viewModel.questions.collectAsStateWithLifecycle().value) {
         viewModel.getByCategory(categoryName)
     }
 

@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.androidinterviewprep.data.model.Question
 import com.example.androidinterviewprep.viewmodel.QuestionViewModel
 
@@ -31,8 +32,8 @@ fun QuestionDetailScreen(
     onNavigateToQuestion: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val reviewedIds by viewModel.reviewedQuestionIds.collectAsState()
-    val questions = remember(categoryName, viewModel.questions.collectAsState().value) {
+    val reviewedIds by viewModel.reviewedQuestionIds.collectAsStateWithLifecycle()
+    val questions = remember(categoryName, viewModel.questions.collectAsStateWithLifecycle().value) {
         viewModel.getByCategory(categoryName)
     }
     
@@ -154,7 +155,7 @@ private fun QuestionMainContent(
     questionId: Int,
     modifier: Modifier = Modifier
 ) {
-    var showAnswer by remember(questionId) { mutableStateOf(false) }
+    var showAnswer by remember(questionId) { mutableStateOf(true) }
 
     Column(
         modifier = modifier.verticalScroll(rememberScrollState())
