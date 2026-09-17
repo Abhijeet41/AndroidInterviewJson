@@ -1,15 +1,23 @@
 package com.example.androidinterviewprep
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Quiz
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -31,14 +39,34 @@ import com.example.androidinterviewprep.ui.home.HomeScreen
 import com.example.androidinterviewprep.ui.list.QuestionListScreen
 import com.example.androidinterviewprep.ui.quiz.QuizScreen
 import com.example.androidinterviewprep.ui.search.SearchScreen
+import com.example.androidinterviewprep.ui.settings.SettingsScreen
 import com.example.androidinterviewprep.viewmodel.QuestionViewModel
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private val TAG = "MainActivity"
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            Log.d(TAG, "Notification permission granted")
+            Toast.makeText(this, "Notification permission granted", Toast.LENGTH_SHORT).show()
+        } else {
+            Log.w(TAG, "Notification permission denied")
+            Toast.makeText(this, "Notification permission denied. Push notifications will not be shown.", Toast.LENGTH_LONG).show()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Request runtime notification permission for Android 13+ (API 33+)
+        askNotificationPermission()
+
         setContent {
             MyApplicationTheme {
                 Surface(
@@ -49,6 +77,45 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        getFCMToken()
+    }
+
+    private fun askNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+                PackageManager.PERMISSION_GRANTED
+            ) {
+                Log.d(TAG, "Notification permission already granted")
+            } else {
+                // Directly request the permission
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
+
+    private fun getFCMToken() {
+        FirebaseMessaging.getInstance().token
+            .addOnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w(TAG, "Fetching FCM token failed", task.exception)
+                    return@addOnCompleteListener
+                }
+
+                // Get the token
+                val token = task.result
+                Log.d(TAG, "FCM Token: $token")
+
+                // TODO: Send token to your server for future push notifications
+                sendTokenToServer(token)
+
+                // Optional: Show token for debugging
+                // Toast.makeText(this, "Token: $token", Toast.LENGTH_LONG).show()
+            }
+    }
+    private fun sendTokenToServer(token: String) {
+        // TODO: Implement API call to save token in your backend
+        // Example: Retrofit call to POST /api/save-token
+        Log.d(TAG, "Send this token to your server: $token")
     }
 }
 
@@ -56,6 +123,7 @@ sealed class Screen(val route: String, val title: String, val icon: ImageVector)
     object Home : Screen("home", "Home", Icons.Default.Home)
     object Search : Screen("search", "Search", Icons.Default.Search)
     object Quiz : Screen("quiz", "Quiz", Icons.Default.Quiz)
+    object Settings : Screen("settings", "Settings", Icons.Default.Settings)
 }
 
 @Composable
@@ -139,7 +207,16 @@ fun MainAppContent() {
                     viewModel = viewModel,
                     onCategoryClick = { categoryName ->
                         navController.navigate("list/$categoryName")
+                    },
+                    onSettingsClick = {
+                        navController.navigate(Screen.Settings.route)
                     }
+                )
+            }
+            
+            composable(Screen.Settings.route) {
+                SettingsScreen(
+                    onBackClick = { navController.popBackStack() }
                 )
             }
             
