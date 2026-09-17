@@ -41,11 +41,17 @@ import com.example.androidinterviewprep.ui.quiz.QuizScreen
 import com.example.androidinterviewprep.ui.search.SearchScreen
 import com.example.androidinterviewprep.ui.settings.SettingsScreen
 import com.example.androidinterviewprep.viewmodel.QuestionViewModel
+import com.example.androidinterviewprep.data.AppPreferences
+import com.example.androidinterviewprep.data.ThemePreference
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @Inject
+    lateinit var appPreferences: AppPreferences
+
     private val TAG = "MainActivity"
 
     private val requestPermissionLauncher = registerForActivityResult(
@@ -68,7 +74,15 @@ class MainActivity : ComponentActivity() {
         askNotificationPermission()
 
         setContent {
-            MyApplicationTheme {
+            val themePreference by appPreferences.themePreference.collectAsStateWithLifecycle(initialValue = ThemePreference.SYSTEM)
+            val isSystemDark = androidx.compose.foundation.isSystemInDarkTheme()
+            val darkTheme = when (themePreference) {
+                ThemePreference.LIGHT -> false
+                ThemePreference.DARK -> true
+                ThemePreference.SYSTEM -> isSystemDark
+            }
+
+            MyApplicationTheme(darkTheme = darkTheme) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.androidinterviewprep.data.ThemePreference
 import com.example.androidinterviewprep.viewmodel.SettingsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,6 +33,7 @@ fun SettingsScreen(
 ) {
     val context = LocalContext.current
     val remindersEnabled by viewModel.remindersEnabled.collectAsStateWithLifecycle()
+    val themePreference by viewModel.themePreference.collectAsStateWithLifecycle()
 
     var hasNotificationPermission by remember {
         mutableStateOf(
@@ -60,7 +63,9 @@ fun SettingsScreen(
 
     SettingsContent(
         remindersEnabled = remindersEnabled,
+        themePreference = themePreference,
         onBackClick = onBackClick,
+        onThemePreferenceChange = { viewModel.setThemePreference(it) },
         onRemindersEnabledChange = { enabled ->
             if (enabled) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !hasNotificationPermission) {
@@ -87,7 +92,9 @@ fun SettingsScreen(
 @Composable
 fun SettingsContent(
     remindersEnabled: Boolean,
+    themePreference: ThemePreference,
     onBackClick: () -> Unit,
+    onThemePreferenceChange: (ThemePreference) -> Unit,
     onRemindersEnabledChange: (Boolean) -> Unit,
     onTestReminderClick: () -> Unit
 ) {
@@ -110,6 +117,60 @@ fun SettingsContent(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Palette,
+                            contentDescription = "Appearance",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Column {
+                            Text(
+                                text = "Appearance",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = "Customize the app theme",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+
+                    SingleChoiceSegmentedButtonRow(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        val options = listOf(
+                            ThemePreference.SYSTEM to "System",
+                            ThemePreference.LIGHT to "Light",
+                            ThemePreference.DARK to "Dark"
+                        )
+                        options.forEachIndexed { index, (preference, label) ->
+                            SegmentedButton(
+                                selected = themePreference == preference,
+                                onClick = { onThemePreferenceChange(preference) },
+                                shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size)
+                            ) {
+                                Text(label)
+                            }
+                        }
+                    }
+                }
+            }
+
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
@@ -170,7 +231,9 @@ fun PreviewSettingsScreenDisabled() {
     MaterialTheme {
         SettingsContent(
             remindersEnabled = false,
+            themePreference = ThemePreference.SYSTEM,
             onBackClick = {},
+            onThemePreferenceChange = {},
             onRemindersEnabledChange = {},
             onTestReminderClick = {}
         )
@@ -183,7 +246,9 @@ fun PreviewSettingsScreenEnabled() {
     MaterialTheme {
         SettingsContent(
             remindersEnabled = true,
+            themePreference = ThemePreference.DARK,
             onBackClick = {},
+            onThemePreferenceChange = {},
             onRemindersEnabledChange = {},
             onTestReminderClick = {}
         )

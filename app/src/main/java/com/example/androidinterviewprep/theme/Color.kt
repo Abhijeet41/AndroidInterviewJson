@@ -3,13 +3,13 @@ package com.example.androidinterviewprep.theme
 import androidx.compose.ui.graphics.Color
 
 // Light Palette Colors
-val LightPrimary = Color(0xFF1E3A8A)       // Deep Indigo
+val LightPrimary = Color(0xFF0284C7)       // Sky Blue / Cyan
 val LightOnPrimary = Color(0xFFFFFFFF)
-val LightPrimaryContainer = Color(0xFFDBEAFE)
-val LightOnPrimaryContainer = Color(0xFF1E40AF)
+val LightPrimaryContainer = Color(0xFFBAE6FD)
+val LightOnPrimaryContainer = Color(0xFF0369A1)
 val LightSecondary = Color(0xFF0D9488)     // Teal
 val LightOnSecondary = Color(0xFFFFFFFF)
-val LightBackground = Color(0xFFF8FAFC)    // Soft Grey-Blue
+val LightBackground = Color(0xFFF8FAFC)    // Off-White
 val LightOnBackground = Color(0xFF0F172A)
 val LightSurface = Color(0xFFFFFFFF)
 val LightOnSurface = Color(0xFF0F172A)
