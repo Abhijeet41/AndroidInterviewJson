@@ -1072,5 +1072,119 @@
     "category": "Services & Background",
     "question": "How would you reduce APK size in Android beyond ProGuard or R8?",
     "answer": "There are several strategies to reduce APK size beyond just enabling R8 obfuscation:\n\nPublish Android App Bundle (.aab) instead of a universal APK:\nThe Play Store generates optimized APKs for each device, delivering only the screen densities and CPU architectures that the specific user needs. This alone can reduce download size significantly.\n\nUse resConfigs to strip unused language resources:\nThird-party libraries often include translations for dozens of languages. Use resConfigs in Gradle to keep only the languages your app supports:\nandroid {\n    defaultConfig {\n        resConfigs \"en\", \"es\"\n    }\n}\n\nEnable shrinkResources:\nSet shrinkResources = true in your build.gradle alongside minifyEnabled = true. This automatically deletes unused XML layouts, drawables, and other resources that R8 identifies as unreferenced.\n\nOptimize image assets:\n- Convert PNG and JPG images to WebP format, which provides better compression with the same quality.\n- Replace raster images with Vector Drawables wherever possible, since vectors are resolution-independent and much smaller in file size.\n\nRemove unused dependencies:\nAudit your Gradle dependencies regularly and remove any libraries that are no longer used, as each library adds methods and resources to the APK.\n\nUse Android Size Analyzer:\nAndroid Studio has a built-in APK Analyzer tool (Build → Analyze APK) to inspect exactly what is consuming space inside your APK and identify the biggest opportunities for reduction."
+  },
+    {
+    "id": 180,
+    "category": "Jetpack Compose",
+    "question": "What is Jetpack Compose?",
+    "answer": "Jetpack Compose is Android's modern, recommended toolkit for building native UI.\n\nTraditional XML-based UI uses an imperative approach — you update the UI state and then manually update each UI element to reflect that change.\n\nJetpack Compose uses a declarative approach — you only update the state, and Compose automatically updates the UI elements that depend on that state.\n\nKey benefits:\n- Less code: reduces the need for XML layouts and eliminates boilerplate.\n- Fewer errors: less code means fewer places for bugs to hide.\n- More maintainable: UI and logic are co-located in Kotlin, making the codebase easier to read and modify."
+  },
+  {
+    "id": 181,
+    "category": "Jetpack Compose",
+    "question": "Explain the Jetpack Compose lifecycle.",
+    "answer": "The Jetpack Compose lifecycle is similar to the traditional Android lifecycle but has unique characteristics due to its declarative and reactive nature.\n\nComposition:\nThe initial phase where UI elements are created for the first time. This phase occurs only once unless the composable is removed and re-added to the UI tree.\n\nRecomposition:\nWhen state changes, Compose re-runs only the composable functions that depend on the changed state — not the entire UI. This makes updates efficient and targeted.\n\nDisposal:\nWhen a UI element is no longer needed (e.g., when navigating to another screen), Compose removes it from the composition and clears up its associated memory and resources."
+  },
+  {
+    "id": 182,
+    "category": "Jetpack Compose",
+    "question": "What is setContent in Jetpack Compose?",
+    "answer": "setContent is the Compose equivalent of setContentView in the traditional XML-based approach. It is called inside onCreate() of an Activity and allows you to display composable UI to the user.\n\nInstead of inflating an XML layout, setContent accepts a composable function that defines the UI.\n\nExample:\nclass MainActivity : ComponentActivity() {\n    override fun onCreate(savedInstanceState: Bundle?) {\n        super.onCreate(savedInstanceState)\n        setContent {\n            MyAppTheme {\n                HomeScreen()\n            }\n        }\n    }\n}"
+  },
+  {
+    "id": 183,
+    "category": "Jetpack Compose",
+    "question": "What are Composable functions in Jetpack Compose?",
+    "answer": "A Composable function is the fundamental building block of Jetpack Compose UI. It is a regular Kotlin function annotated with @Composable that defines a piece of UI in a declarative way.\n\nKey characteristics:\n- Annotated with @Composable.\n- Can call other @Composable functions.\n- Cannot return a value (return type is Unit).\n- Can read state and automatically recompose when that state changes.\n\nExample:\n@Composable\nfun Greeting(name: String) {\n    Text(text = \"Hello, $name!\")\n}"
+  },
+  {
+    "id": 184,
+    "category": "Jetpack Compose",
+    "question": "What is the purpose of remember in Jetpack Compose?",
+    "answer": "remember is used to store a value in memory so it is not reset when the composable recomposes.\n\nWhen state changes, Compose re-runs the composable function. Without remember, any variable declared inside the composable would be re-initialized to its default value on every recomposition.\n\nWith remember, the value is preserved across recompositions as long as the composable stays in the composition.\n\nExample:\n@Composable\nfun Counter() {\n    var count by remember { mutableStateOf(0) }\n    Button(onClick = { count++ }) {\n        Text(\"Count: $count\")\n    }\n}\n\nNote: remember does NOT survive configuration changes like screen rotation. Use rememberSaveable for that."
+  },
+  {
+    "id": 185,
+    "category": "Jetpack Compose",
+    "question": "What is @Preview in Jetpack Compose?",
+    "answer": "@Preview is an annotation used in Jetpack Compose to preview how a composable will look directly inside Android Studio without running the app on a device or emulator.\n\nKey points:\n- The annotated function must be a @Composable function with no required parameters (or use default values).\n- You can have multiple @Preview annotations with different configurations (dark mode, font scale, device size).\n- Previews are only for development purposes and are not included in the final APK.\n\nExample:\n@Preview(showBackground = true)\n@Composable\nfun GreetingPreview() {\n    Greeting(name = \"Abhijeet\")\n}"
+  },
+  {
+    "id": 186,
+    "category": "Jetpack Compose",
+    "question": "What is a Modifier in Jetpack Compose?",
+    "answer": "A Modifier in Jetpack Compose is a powerful tool used to modify the appearance, behavior, and layout of composable functions. Modifiers are chained together and applied in order.\n\nCommon uses:\n- Layout: padding(), fillMaxWidth(), size(), offset()\n- Appearance: background(), border(), clip(), alpha()\n- Interaction: clickable(), scrollable(), draggable()\n- Drawing: drawBehind(), shadow()\n\nExample:\nBox(\n    modifier = Modifier\n        .fillMaxWidth()\n        .padding(16.dp)\n        .background(Color.Blue)\n        .clickable { /* handle click */ }\n) {\n    Text(\"Hello\", color = Color.White)\n}\n\nOrder matters: padding before background gives padding outside the background; background before padding gives padding inside it."
+  },
+  {
+    "id": 187,
+    "category": "Jetpack Compose",
+    "question": "What is recomposition in Jetpack Compose?",
+    "answer": "Recomposition is the process by which Jetpack Compose updates parts of the UI when state changes.\n\nWhen a state variable (like a MutableState) changes, Compose identifies only the composable functions that read that state and re-runs only those — not the entire UI tree. This makes Compose efficient.\n\nKey points:\n- Recomposition is automatic — you do not trigger it manually.\n- Only composables that read the changed state are recomposed.\n- Composables should be side-effect free so they can be safely re-run at any time.\n- Avoid heavy computations directly inside composables since they may run frequently during recomposition."
+  },
+  {
+    "id": 188,
+    "category": "Jetpack Compose",
+    "question": "What is State in Jetpack Compose?",
+    "answer": "State in Jetpack Compose represents data that can change over time. When state changes, Compose automatically recomposes the composables that read that state, keeping the UI in sync.\n\nHow to create state:\nvar name by remember { mutableStateOf(\"\") }\n\nWhen name changes, every composable that reads name is automatically recomposed.\n\nTypes of state holders in Compose:\n- mutableStateOf() — basic observable state.\n- MutableStateFlow — for ViewModel-level state.\n- MutableLiveData — legacy, still works but StateFlow is preferred in Compose."
+  },
+  {
+    "id": 189,
+    "category": "Jetpack Compose",
+    "question": "What is derivedStateOf in Jetpack Compose?",
+    "answer": "derivedStateOf is used to create a new state that is computed from one or more existing states. It is useful when the source state changes frequently but the derived result changes less often, preventing unnecessary recompositions.\n\nExample:\nSuppose scrollState updates on every pixel scrolled, but you only want to recompose when the user has scrolled another 100 pixels:\n\nval counter = remember {\n    derivedStateOf {\n        (scrollState / 100).roundToInt()\n    }\n}\n\nText(counter.value.toString())\n\nWithout derivedStateOf, the Text would recompose on every single pixel of scroll. With derivedStateOf, it only recomposes when counter actually changes — once every 100 pixels. This significantly reduces unnecessary recompositions."
+  },
+  {
+    "id": 190,
+    "category": "Jetpack Compose",
+    "question": "What is the difference between remember and rememberSaveable in Jetpack Compose?",
+    "answer": "Both remember and rememberSaveable preserve state across recompositions, but they differ in how they handle configuration changes.\n\nremember:\n- Survives recomposition.\n- Does NOT survive configuration changes (e.g., screen rotation, language change).\n- State is lost when the Activity is recreated.\nExample: var count by remember { mutableStateOf(0) }\n\nrememberSaveable:\n- Survives recomposition.\n- Also survives configuration changes by automatically saving the value into the Android saved instance state bundle.\n- Works automatically for primitive types and data classes that are Parcelable or Serializable.\nExample: var count by rememberSaveable { mutableStateOf(0) }\n\nRule of thumb: Use rememberSaveable for any UI state the user would expect to survive a screen rotation, and remember for temporary UI state that can safely reset."
+  },
+  {
+    "id": 191,
+    "category": "Jetpack Compose",
+    "question": "What is rememberCoroutineScope in Jetpack Compose?",
+    "answer": "rememberCoroutineScope() provides a CoroutineScope that is tied to the composable's lifecycle and can be used to launch coroutines from non-composable contexts such as button click callbacks.\n\nWhy it is needed:\nLaunchedEffect can only be used directly inside a composable body and cannot be triggered from a click handler. rememberCoroutineScope solves this by giving you a scope you can use anywhere inside the composable, including inside onClick.\n\nThe scope is remembered across recompositions and is automatically cancelled when the composable leaves the composition, preventing memory leaks.\n\nExample:\n@Composable\nfun MyScreen() {\n    val scope = rememberCoroutineScope()\n    val snackbarHostState = remember { SnackbarHostState() }\n\n    Button(onClick = {\n        scope.launch {\n            snackbarHostState.showSnackbar(\"Button clicked!\")\n        }\n    }) {\n        Text(\"Show Snackbar\")\n    }\n}"
+  },
+  {
+    "id": 192,
+    "category": "Jetpack Compose",
+    "question": "What is state hoisting in Jetpack Compose?",
+    "answer": "State hoisting is a design pattern in Jetpack Compose where state is moved from a child composable up to its parent. The parent holds the state and passes down the current value and an update callback (lambda) to the child.\n\nThis makes the child composable stateless — it only receives data and reports events, making it reusable, easier to test, and easier to preview.\n\nExample — without hoisting (stateful, not reusable):\n@Composable\nfun Counter() {\n    var count by remember { mutableStateOf(0) }\n    Button(onClick = { count++ }) { Text(\"Count: $count\") }\n}\n\nExample — with hoisting (stateless, reusable):\n@Composable\nfun Counter(count: Int, onIncrement: () -> Unit) {\n    Button(onClick = onIncrement) { Text(\"Count: $count\") }\n}\n\n// Parent holds the state:\n@Composable\nfun CounterScreen() {\n    var count by remember { mutableStateOf(0) }\n    Counter(count = count, onIncrement = { count++ })\n}"
+  },
+  {
+    "id": 193,
+    "category": "Jetpack Compose",
+    "question": "What is a side-effect in Jetpack Compose?",
+    "answer": "In Jetpack Compose, a side-effect is any operation that changes the app's state or interacts with the outside world from within a composable — such as making a network call, updating a database, navigating to another screen, or showing a snackbar.\n\nBecause composables can recompose frequently and unpredictably, placing side-effects directly in composable functions is unsafe — they could execute multiple times unexpectedly.\n\nCompose provides dedicated side-effect APIs to manage these operations safely:\n- LaunchedEffect — runs a suspend function when the key changes.\n- DisposableEffect — runs setup and cleanup code.\n- rememberCoroutineScope — launches coroutines from event callbacks.\n- SideEffect — runs after every successful recomposition."
+  },
+  {
+    "id": 194,
+    "category": "Jetpack Compose",
+    "question": "What is LaunchedEffect in Jetpack Compose?",
+    "answer": "LaunchedEffect is a side-effect API used to safely run suspend functions (coroutines) inside a Composable.\n\nBehavior:\n- Runs the coroutine block when the composable enters the composition.\n- Restarts the coroutine if any of its keys change.\n- Cancels the running coroutine if the composable leaves the composition.\n\nExample — fetch data when screen opens:\n@Composable\nfun UserScreen(userId: String, viewModel: UserViewModel) {\n    LaunchedEffect(userId) {\n        viewModel.loadUser(userId)\n    }\n}\n\nKey point: LaunchedEffect can only be called from the composable body, not from event callbacks like onClick. Use rememberCoroutineScope for that."
+  },
+  {
+    "id": 195,
+    "category": "Jetpack Compose",
+    "question": "What is DisposableEffect in Jetpack Compose?",
+    "answer": "DisposableEffect is a side-effect API in Jetpack Compose used to perform setup and cleanup operations tied to the composable's lifecycle.\n\nBehavior:\n- Runs the setup block when the composable enters the composition or when its key changes.\n- The onDispose block runs when the composable leaves the composition or before the effect restarts due to a key change.\n\nCommonly used for: registering and unregistering listeners, observers, or subscriptions.\n\nExample — register and unregister a lifecycle observer:\n@Composable\nfun LifecycleObserverEffect(lifecycleOwner: LifecycleOwner) {\n    DisposableEffect(lifecycleOwner) {\n        val observer = LifecycleEventObserver { _, event ->\n            println(\"Event: $event\")\n        }\n        lifecycleOwner.lifecycle.addObserver(observer)\n        onDispose {\n            lifecycleOwner.lifecycle.removeObserver(observer)\n        }\n    }\n}"
+  },
+  {
+    "id": 196,
+    "category": "Jetpack Compose",
+    "question": "What is mutableStateOf in Jetpack Compose?",
+    "answer": "mutableStateOf is an observable state holder built into Jetpack Compose. When its value changes, Compose automatically triggers recomposition for every composable function that reads that state, keeping the UI in sync with the underlying data.\n\nUsage:\nvar name by remember { mutableStateOf(\"\") }\n\nThree ways to use it:\nval state = remember { mutableStateOf(0) }\n// Access: state.value\n\nvar state by remember { mutableStateOf(0) }\n// Access: state directly (requires import for property delegate)\n\nval (state, setState) = remember { mutableStateOf(0) }\n// Destructured access\n\nBest practice: Use the by delegate syntax (var count by remember { mutableStateOf(0) }) for the most concise code. Always wrap mutableStateOf with remember so the state survives recomposition."
+  },
+  {
+    "id": 197,
+    "category": "Jetpack Compose",
+    "question": "How does Navigation work in Jetpack Compose?",
+    "answer": "Navigation in Jetpack Compose uses three core components:\n\nNavController:\nManages the navigation back stack and the current destination. Created using rememberNavController().\n\nNavHost:\nA composable that displays the current navigation destination. It takes a NavController and a start destination.\n\ncomposable():\nDefines each screen/destination inside the NavHost using a route string.\n\nExample:\n@Composable\nfun AppNavigation() {\n    val navController = rememberNavController()\n    NavHost(navController = navController, startDestination = \"home\") {\n        composable(\"home\") { HomeScreen(navController) }\n        composable(\"detail/{id}\") { backStackEntry ->\n            DetailScreen(id = backStackEntry.arguments?.getString(\"id\"))\n        }\n    }\n}\n\nNavigate to a screen:\nnavController.navigate(\"detail/42\")\n\nNavigate back:\nnavController.popBackStack()"
+  },
+  {
+    "id": 198,
+    "category": "Jetpack Compose",
+    "question": "What is a Navigation Graph in Jetpack Compose?",
+    "answer": "A Navigation Graph in Jetpack Compose is a map of all the composable screens (destinations) in the app and the possible routes between them. It is defined inside the NavHost composable using composable() blocks.\n\nIt gives you a clear overview of all possible destinations in the app and the paths that connect them, making the navigation flow easier to understand and maintain.\n\nExample:\nNavHost(navController = navController, startDestination = \"login\") {\n    composable(\"login\") { LoginScreen(navController) }\n    composable(\"home\") { HomeScreen(navController) }\n    composable(\"profile/{userId}\") { backStackEntry ->\n        ProfileScreen(userId = backStackEntry.arguments?.getString(\"userId\"))\n    }\n}\n\nThe graph shows that the app starts at login, can go to home, and from home can navigate to a profile screen with a userId argument."
   }
 ]
