@@ -1186,5 +1186,29 @@
     "category": "Jetpack Compose",
     "question": "What is a Navigation Graph in Jetpack Compose?",
     "answer": "A Navigation Graph in Jetpack Compose is a map of all the composable screens (destinations) in the app and the possible routes between them. It is defined inside the NavHost composable using composable() blocks.\n\nIt gives you a clear overview of all possible destinations in the app and the paths that connect them, making the navigation flow easier to understand and maintain.\n\nExample:\nNavHost(navController = navController, startDestination = \"login\") {\n    composable(\"login\") { LoginScreen(navController) }\n    composable(\"home\") { HomeScreen(navController) }\n    composable(\"profile/{userId}\") { backStackEntry ->\n        ProfileScreen(userId = backStackEntry.arguments?.getString(\"userId\"))\n    }\n}\n\nThe graph shows that the app starts at login, can go to home, and from home can navigate to a profile screen with a userId argument."
+  },
+    {
+    "id": 199,
+    "category": "Unit Testing",
+    "question": "What is Unit Testing and what is the motive of unit testing?",
+    "answer": "Unit testing means testing the smallest possible part of the code, which could be a method, a class or a component, in isolation.\n\nMotive of unit testing:\n1) Identify bugs early in the project.\n2) Helps in writing modular code, so new features can be added easily."
+  },
+  {
+    "id": 200,
+    "category": "Unit Testing",
+    "question": "How many types of unit tests are there in Android? What are JUnit and Instrumentation tests?",
+    "answer": "There are two types of tests in Android:\n\n1) JVM Test (Local Unit Test):\nRuns on your computer's JVM without a device or emulator. It is fast and lives in the test/ folder.\n\n2) On-Device Test (Instrumentation Test):\nRuns on a physical device or emulator and lives in the androidTest/ folder. It is used when Android Context or real framework behavior is needed.\n\nJUnit:\nJUnit is a framework that helps you write and execute test cases."
+  },
+  {
+    "id": 201,
+    "category": "Unit Testing",
+    "question": "What is testing in Android and what are its advantages?",
+    "answer": "Testing is a software development process in which we verify the app's behavior in order to find bugs.\n\nAdvantages:\n1) Forces you to follow a clean architecture in the codebase.\n2) Fast failure detection in the development cycle.\n3) Safer code refactoring, letting you optimize code without worrying about regressions."
+  },
+  {
+    "id": 202,
+    "category": "Unit Testing",
+    "question": "Why should we avoid hardcoding Dispatchers.IO in a ViewModel or Use Case, and what is DispatcherProvider?",
+    "answer": "If you hardcode Dispatchers.IO directly inside a ViewModel or Use Case, unit testing becomes very hard. Unit tests run instantly on your computer, not on a real Android phone. A computer has no Android Main thread, and background threads make tests unpredictable (the test might finish before the background work even starts).\n\nSolution: DispatcherProvider\nCreate an interface that supplies dispatchers. In the application code use the real implementation, and in tests use a TestDispatcherProvider that returns Unconfined (or a test dispatcher), so all coroutines run immediately on the test thread.\n\nExample:\ninterface DispatcherProvider {\n    val main: CoroutineDispatcher\n    val io: CoroutineDispatcher\n    val default: CoroutineDispatcher\n}\n\nclass DefaultDispatcherProvider : DispatcherProvider {\n    override val main = Dispatchers.Main\n    override val io = Dispatchers.IO\n    override val default = Dispatchers.Default\n}\n\nclass TestDispatcherProvider : DispatcherProvider {\n    override val main = Dispatchers.Unconfined\n    override val io = Dispatchers.Unconfined\n    override val default = Dispatchers.Unconfined\n}\n\nUsage in a ViewModel:\nclass UserViewModel(private val dispatchers: DispatcherProvider) : ViewModel() {\n    fun load() = viewModelScope.launch(dispatchers.io) {\n        // work here\n    }\n}"
   }
 ]
