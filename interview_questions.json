@@ -1258,5 +1258,41 @@
     "category": "RxJava & Dagger-Hilt",
     "question": "What is the Factory design pattern?",
     "answer": "The Factory pattern is a creational design pattern that provides an interface for creating objects, while letting subclasses or the factory decide which concrete type to create. The caller does not need to know the creation logic.\n\nIn Android it is used to centralize and encapsulate object creation, for example ViewModelProvider.Factory.\n\nExample:\ninterface Shape {\n    fun draw()\n}\n\nclass Circle : Shape {\n    override fun draw() = println(\"Drawing Circle\")\n}\n\nclass Square : Shape {\n    override fun draw() = println(\"Drawing Square\")\n}\n\nobject ShapeFactory {\n    fun create(type: String): Shape = when (type) {\n        \"circle\" -> Circle()\n        \"square\" -> Square()\n        else -> throw IllegalArgumentException(\"Unknown shape\")\n    }\n}\n\nval shape = ShapeFactory.create(\"circle\")\nshape.draw()"
+  },
+    {
+    "id": 211,
+    "category": "Architecture Components",
+    "question": "What are the advantages of Use Cases in Clean Architecture?",
+    "answer": "1) Removes code duplication: if two ViewModels need the user profile data, both can call one method from the Use Case class instead of repeating the same logic in each ViewModel.\n\n2) Screaming Architecture: a Use Case should be named so that anyone can understand what it does just by reading the class name.\nExample: GetUsersUseCase gets the list of users from a data source."
+  },
+  {
+    "id": 212,
+    "category": "Architecture Components",
+    "question": "What is the MVC pattern and what are its advantages and disadvantages?",
+    "answer": "MVC stands for Model-View-Controller. It is an architectural pattern that separates an application into three components:\n- Model: handles data and business logic.\n- View: handles the UI.\n- Controller: handles user interactions and coordinates between Model and View.\n\nAdvantage:\n- Basic separation of UI, data and input handling.\n\nDisadvantages:\n- Large controllers (in Android, Activities and Fragments become bloated).\n- Tight coupling between components.\n- Difficult to manage and test in complex applications."
+  },
+  {
+    "id": 213,
+    "category": "Architecture Components",
+    "question": "What is the MVP pattern?",
+    "answer": "MVP stands for Model-View-Presenter.\n- Model: handles data.\n- View: handles the UI.\n- Presenter: contains presentation logic and acts as a middleman between Model and View.\n\nAdvantages:\n- Better separation of concerns.\n- Easy unit testing.\n\nDisadvantages:\n- Additional boilerplate code.\n- Presenters can become large.\n\nImportant interview point:\nIn MVP, the View and Presenter communicate through an interface, whereas in MVC the Controller handles user input and coordinates between Model and View."
+  },
+  {
+    "id": 214,
+    "category": "Architecture Components",
+    "question": "What is MVVM?",
+    "answer": "MVVM stands for Model-View-ViewModel.\n- Model: handles data.\n- View: displays the UI.\n- ViewModel: manages UI-related logic and exposes observable state to the View.\n\nIn MVVM, the ViewModel is completely independent of the View. Unlike MVP, which uses interfaces, the View interacts with the ViewModel through the observer pattern (LiveData, StateFlow)."
+  },
+  {
+    "id": 215,
+    "category": "Architecture Components",
+    "question": "What is MVVM with Clean Architecture?",
+    "answer": "MVVM with Clean Architecture combines the MVVM presentation pattern with Clean Architecture's layered approach.\n\n- Presentation layer: UI and ViewModel.\n- Domain layer: Use Cases and repository interfaces.\n- Data layer: repository implementations and data sources.\n\nBenefits: better separation of concerns, testability, maintainability and scalability.\n\nNote: for small-scale projects Clean Architecture is not recommended because of the extra classes and setup time."
+  },
+  {
+    "id": 216,
+    "category": "Architecture Components",
+    "question": "What is code modularization in Android?",
+    "answer": "Code modularization means dividing a large application into smaller, independent modules, where each module has a specific responsibility. For example, separate modules for data, domain and presentation.\n\nBenefits:\n- Reduced build time: if you change code in one module (say domain), only that module is rebuilt.\n- Code reusability.\n- Better maintainability.\n- Easier testing.\n- Improved scalability."
   }
 ]
