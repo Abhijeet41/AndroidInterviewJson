@@ -1210,5 +1210,53 @@
     "category": "Unit Testing",
     "question": "Why should we avoid hardcoding Dispatchers.IO in a ViewModel or Use Case, and what is DispatcherProvider?",
     "answer": "If you hardcode Dispatchers.IO directly inside a ViewModel or Use Case, unit testing becomes very hard. Unit tests run instantly on your computer, not on a real Android phone. A computer has no Android Main thread, and background threads make tests unpredictable (the test might finish before the background work even starts).\n\nSolution: DispatcherProvider\nCreate an interface that supplies dispatchers. In the application code use the real implementation, and in tests use a TestDispatcherProvider that returns Unconfined (or a test dispatcher), so all coroutines run immediately on the test thread.\n\nExample:\ninterface DispatcherProvider {\n    val main: CoroutineDispatcher\n    val io: CoroutineDispatcher\n    val default: CoroutineDispatcher\n}\n\nclass DefaultDispatcherProvider : DispatcherProvider {\n    override val main = Dispatchers.Main\n    override val io = Dispatchers.IO\n    override val default = Dispatchers.Default\n}\n\nclass TestDispatcherProvider : DispatcherProvider {\n    override val main = Dispatchers.Unconfined\n    override val io = Dispatchers.Unconfined\n    override val default = Dispatchers.Unconfined\n}\n\nUsage in a ViewModel:\nclass UserViewModel(private val dispatchers: DispatcherProvider) : ViewModel() {\n    fun load() = viewModelScope.launch(dispatchers.io) {\n        // work here\n    }\n}"
+  },
+    {
+    "id": 203,
+    "category": "RxJava & Dagger-Hilt",
+    "question": "What is Dagger 2 and what are its key annotations?",
+    "answer": "Dagger was created by developers at Square in 2012. Dagger 2 is a compile-time dependency injection framework for Android. It follows the Java Specification Request (JSR) 330 and uses an annotation processor.\n\nKey annotations:\n\n@Module: Used on a class that constructs objects which are eventually provided as dependencies.\n\n@Provides: Used on methods inside a Module class that return the object.\n\n@Inject: Requests Dagger to provide the respective object. Used on constructors, fields (mostly where the constructor is not accessible, like Activities and Fragments) and methods.\n\n@Component: A Module does not provide dependencies directly to the requesting class. A Component interface acts as a bridge between @Module and @Inject.\n\n@Singleton: Only a single instance of the dependency object is created.\n\n@Scope: Used on an interface to create a custom scope. A scope keeps a single instance of a class as long as the scope exists. Example: @ApplicationScope lives as long as the Application, @ActivityScope lives until the Activity is killed.\n\n@Qualifier: Used when multiple objects of the same type with different values are needed. Example: Student(\"Vamsi\") and Student(\"Krishna\"). A Qualifier tells Dagger which instance to provide.\n\n@Binds: Used on abstract methods in a module to bind an interface or abstract class to its implementation.\n\n@BindsInstance: Used for values received at runtime, such as applicationContext, which can then be used to create other objects.\nExample:\nval db = Room.databaseBuilder(\n    applicationContext,\n    AppDatabase::class.java, \"database-name\"\n).build()"
+  },
+  {
+    "id": 204,
+    "category": "RxJava & Dagger-Hilt",
+    "question": "When should we use constructor injection in Dagger 2?",
+    "answer": "Use constructor injection when you own the class and can control its constructor. You simply annotate the constructor with @Inject and Dagger creates the object and supplies its dependencies.\n\nExample:\nclass UserRepository @Inject constructor(\n    private val api: UserApi\n)"
+  },
+  {
+    "id": 205,
+    "category": "RxJava & Dagger-Hilt",
+    "question": "When should we use field injection in Dagger 2?",
+    "answer": "Use field injection when you cannot use constructor injection. This applies to:\n- Android framework classes like Activities, Fragments and Services, whose objects are created by the system.\n- Third-party library objects like Retrofit or SharedPreferences, which are created using a builder and cannot have @Inject on their constructors. These are provided from a @Module using @Provides.\n\nExample:\nclass MainActivity : AppCompatActivity() {\n    @Inject lateinit var repository: UserRepository\n}"
+  },
+  {
+    "id": 206,
+    "category": "RxJava & Dagger-Hilt",
+    "question": "What is the sequence of injection if multiple types of injection are defined in a class?",
+    "answer": "Dagger performs injection in this order:\n1) Constructor injection\n2) Field injection\n3) Method injection"
+  },
+  {
+    "id": 207,
+    "category": "RxJava & Dagger-Hilt",
+    "question": "What is a Builder design pattern?",
+    "answer": "Design patterns are proven solutions that help create high quality Android apps that are easy to maintain and scale.\n\nThe Builder pattern is a creational design pattern that lets you create complex objects step by step. It separates the construction of an object from its representation. In Android it is used for objects like Dialogs, Notifications and Retrofit.\n\nExample:\nclass Person private constructor(val name: String, val age: Int) {\n\n    class Builder {\n        private var name: String = \"\"\n        private var age: Int = 0\n\n        fun name(name: String) = apply { this.name = name }\n        fun age(age: Int) = apply { this.age = age }\n        fun build() = Person(name, age)\n    }\n}\n\nval person = Person.Builder()\n    .name(\"Abhijeet\")\n    .age(30)\n    .build()"
+  },
+  {
+    "id": 208,
+    "category": "RxJava & Dagger-Hilt",
+    "question": "What is a Singleton class and how do you create it in Kotlin and Java?",
+    "answer": "A Singleton class restricts instantiation to a single instance. No matter how many times or from how many places it is called in the application, it always returns the same instance that was created initially.\n\nIn Kotlin, use the object keyword (thread-safe by default):\nobject MySingleton {\n    var count: Int = 0\n    fun doSomething() {\n        println(\"Doing something...\")\n    }\n}\n\nIn Java, use a private constructor with double-checked locking:\npublic class MySingleton {\n    private static volatile MySingleton instance;\n\n    private MySingleton() { }\n\n    public static MySingleton getInstance() {\n        if (instance == null) {\n            synchronized (MySingleton.class) {\n                if (instance == null) {\n                    instance = new MySingleton();\n                }\n            }\n        }\n        return instance;\n    }\n}\n\nThe volatile keyword and synchronized block make it thread safe."
+  },
+  {
+    "id": 209,
+    "category": "RxJava & Dagger-Hilt",
+    "question": "What is the Observer design pattern?",
+    "answer": "The Observer pattern is a behavioral design pattern that defines a one-to-many dependency between objects. When one object (the subject) changes state, all its dependents (observers) are notified and updated automatically.\n\nIn Android it is used for event-driven UI updates and publish-subscribe communication between components. LiveData, StateFlow and RxJava are built on this idea.\n\nExample:\ninterface Observer {\n    fun update()\n}\n\nclass DataModel {\n    private val observers = mutableListOf<Observer>()\n\n    fun addObserver(observer: Observer) {\n        observers.add(observer)\n    }\n\n    fun removeObserver(observer: Observer) {\n        observers.remove(observer)\n    }\n\n    fun updateData() {\n        observers.forEach { it.update() }\n    }\n}\n\nclass Display : Observer {\n    override fun update() {\n        // update UI with new data\n    }\n}\n\nfun main() {\n    val dataModel = DataModel()\n    val display = Display()\n    dataModel.addObserver(display)\n    dataModel.updateData()\n}"
+  },
+  {
+    "id": 210,
+    "category": "RxJava & Dagger-Hilt",
+    "question": "What is the Factory design pattern?",
+    "answer": "The Factory pattern is a creational design pattern that provides an interface for creating objects, while letting subclasses or the factory decide which concrete type to create. The caller does not need to know the creation logic.\n\nIn Android it is used to centralize and encapsulate object creation, for example ViewModelProvider.Factory.\n\nExample:\ninterface Shape {\n    fun draw()\n}\n\nclass Circle : Shape {\n    override fun draw() = println(\"Drawing Circle\")\n}\n\nclass Square : Shape {\n    override fun draw() = println(\"Drawing Square\")\n}\n\nobject ShapeFactory {\n    fun create(type: String): Shape = when (type) {\n        \"circle\" -> Circle()\n        \"square\" -> Square()\n        else -> throw IllegalArgumentException(\"Unknown shape\")\n    }\n}\n\nval shape = ShapeFactory.create(\"circle\")\nshape.draw()"
   }
 ]
